@@ -1,0 +1,532 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Hedef AVM - Limit Tespit Formu</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+    <style>
+        #hedef-limit-form-wrapper {
+            --hl-primary: #e91e63;
+            --hl-primary-dark: #ad1457;
+            --hl-primary-light: #fff1f6;
+            --hl-bg: #fdf2f8;
+            --hl-text-main: #1f2937;
+            --hl-text-muted: #4b5563;
+            --hl-border: #dee2e6;
+            --hl-white: #ffffff;
+            
+            font-family: 'Inter', sans-serif;
+            width: 100%;
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 15px;
+            box-sizing: border-box;
+            
+            /* Arkaplan Görseli */
+            background-color: #fdf2f8; 
+            background-image: url('https://www.upload.ee/image/19322971/magnific_modern-ecommerce-campaign_2939673108.png');
+            background-size: cover;
+            background-position: center;
+            background-attachment: fixed;
+            background-repeat: no-repeat;
+            
+            overflow-x: hidden;
+            position: relative;
+            z-index: 1;
+        }
+
+        #hedef-limit-form-wrapper * {
+            box-sizing: border-box;
+            -webkit-tap-highlight-color: transparent;
+        }
+
+        #hedef-limit-form-wrapper .hl-container {
+            /* Tam Beyaz, Opak ve Genişletilmiş Form Kartı */
+            background: #ffffff !important;
+            opacity: 1 !important;
+            width: 100%;
+            max-width: 820px; 
+            padding: 25px 25px; 
+            border-radius: 24px;
+            box-shadow: 0 25px 60px -12px rgba(0, 0, 0, 0.25);
+            margin: 0 auto;
+            position: relative;
+            pointer-events: auto !important;
+            border: 1px solid rgba(233, 30, 99, 0.15);
+        }
+
+        @media (min-width: 768px) {
+            #hedef-limit-form-wrapper .hl-container {
+                padding: 30px 45px;
+                border-radius: 35px;
+            }
+        }
+
+        /* Animasyonlar */
+        .hl-fade-in { animation: hlFadeIn 0.8s ease-out forwards; }
+        .hl-slide-up { animation: hlSlideUp 0.6s ease-out forwards; }
+        .hl-shake { animation: hlShake 0.5s ease-in-out; }
+
+        @keyframes hlFadeIn { from { opacity: 0; } to { opacity: 1; } }
+        @keyframes hlSlideUp {
+            from { opacity: 0; transform: translateY(30px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        @keyframes hlShake {
+            0%, 100% { transform: translateX(0); }
+            25% { transform: translateX(-8px); }
+            75% { transform: translateX(8px); }
+        }
+        @keyframes hlSlideDownAlert {
+            from { transform: translate(-50%, -100%); opacity: 0; }
+            to { transform: translate(-50%, 20px); opacity: 1; }
+        }
+
+        #hedef-limit-form-wrapper .hl-header {
+            text-align: center;
+            margin-bottom: 20px;
+        }
+
+        #hedef-limit-form-wrapper .hl-header h2 {
+            font-size: 28px;
+            font-weight: 900;
+            margin: 0 0 5px 0;
+            color: var(--hl-primary); 
+            letter-spacing: -0.8px;
+            line-height: 1.1;
+        }
+
+        #hedef-limit-form-wrapper .hl-label {
+            display: block;
+            font-size: 13px;
+            font-weight: 800;
+            margin-bottom: 5px;
+            color: #111827;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        #hedef-limit-form-wrapper .hl-question {
+            font-size: 15px;
+            font-weight: 700;
+            color: #1f2937;
+            margin-bottom: 8px;
+            line-height: 1.3;
+        }
+
+        #hedef-limit-form-wrapper input,
+        #hedef-limit-form-wrapper select {
+            width: 100%;
+            padding: 11px 16px;
+            border: 2px solid #e5e7eb;
+            border-radius: 12px;
+            font-size: 15px;
+            font-weight: 600;
+            background-color: #f9fafb;
+            outline: none;
+            color: var(--hl-text-main);
+            transition: all 0.2s ease;
+        }
+
+        #hedef-limit-form-wrapper input:focus,
+        #hedef-limit-form-wrapper select:focus {
+            border-color: var(--hl-primary);
+            background-color: #ffffff;
+            box-shadow: 0 0 0 4px rgba(233, 30, 99, 0.08);
+        }
+
+        #hedef-limit-form-wrapper .hl-opt-btn {
+            height: 46px;
+            border: 2px solid #e5e7eb;
+            border-radius: 12px;
+            background: #ffffff;
+            font-size: 14px;
+            font-weight: 700;
+            color: #4b5563;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.2s;
+            user-select: none;
+        }
+
+        #hedef-limit-form-wrapper .hl-opt-btn.active {
+            background-color: var(--hl-primary) !important;
+            border-color: var(--hl-primary) !important;
+            color: #ffffff !important;
+            box-shadow: 0 8px 15px -4px rgba(233, 30, 99, 0.3);
+            font-weight: 800 !important;
+        }
+
+        #hedef-limit-form-wrapper .hl-submit-btn {
+            width: 100%;
+            padding: 16px;
+            background: linear-gradient(135deg, var(--hl-primary), var(--hl-primary-dark));
+            color: #fff !important;
+            border: none;
+            border-radius: 14px;
+            font-size: 17px;
+            font-weight: 800;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            cursor: pointer;
+            margin-top: 15px;
+            box-shadow: 0 12px 25px rgba(233, 30, 99, 0.3);
+            transition: all 0.3s ease;
+        }
+
+        #hedef-limit-form-wrapper .hl-submit-btn:hover {
+            transform: translateY(-2px);
+            opacity: 0.95;
+        }
+
+        #hedef-limit-form-wrapper .hl-limit-box {
+            background: var(--hl-primary-light);
+            border: 3px dashed var(--hl-primary);
+            padding: 25px 20px;
+            border-radius: 20px;
+            margin: 20px 0;
+        }
+
+        #hedef-limit-form-wrapper .hl-limit-amount {
+            font-size: 56px;
+            font-weight: 900;
+            color: #111827;
+            letter-spacing: -2px;
+        }
+
+        #hl-alert {
+            position: fixed;
+            top: 20px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: #111827;
+            color: #ffffff;
+            padding: 14px 28px;
+            border-radius: 50px;
+            font-weight: 700;
+            font-size: 14px;
+            z-index: 10000;
+            display: none;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.3);
+        }
+
+        .hl-hidden { display: none !important; }
+
+        @media (max-width: 640px) {
+            #hedef-limit-form-wrapper .hl-container { padding: 20px 15px; }
+            #hedef-limit-form-wrapper .hl-header h2 { font-size: 22px; }
+            #hedef-limit-form-wrapper .hl-limit-amount { font-size: 46px; }
+        }
+    </style>
+</head>
+<body>
+
+<div id="hedef-limit-form-wrapper">
+    <div id="hl-alert">Lütfen tüm alanları eksiksiz doldurunuz!</div>
+
+    <div class="hl-container hl-slide-up" id="hl-main-container">
+        
+        <!-- FORM EKRANI -->
+        <div id="hl-form-content">
+            <div class="hl-header">
+                <h2>Limit Tespit Formu</h2>
+                <p class="text-[13px] text-gray-500 font-medium">Saniyeler içinde taksit limitinizi belirleyelim.</p>
+            </div>
+
+            <!-- Kişisel Bilgiler Grid -->
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mb-4">
+                <div>
+                    <label class="hl-label">TC Kimlik No *</label>
+                    <input type="tel" id="hl-input-tc" placeholder="TC Kimlik No" maxlength="11" oninput="this.value = this.value.replace(/[^0-9]/g, '')">
+                </div>
+                <div>
+                    <label class="hl-label">Adınız *</label>
+                    <input type="text" id="hl-input-name" placeholder="Adınız">
+                </div>
+                <div>
+                    <label class="hl-label">Soyadınız *</label>
+                    <input type="text" id="hl-input-surname" placeholder="Soyadınız">
+                </div>
+            </div>
+
+            <!-- İletişim Bilgileri Grid -->
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mb-5">
+                <div>
+                    <label class="hl-label">Telefon No *</label>
+                    <input type="tel" id="hl-input-phone" placeholder="05XX XXX XX XX">
+                </div>
+                <div>
+                    <label class="hl-label">Şehir *</label>
+                    <select id="hl-input-city">
+                        <option value="" disabled selected>Şehir Seçiniz</option>
+                        <option value="İstanbul Anadolu">İstanbul Anadolu</option>
+                        <option value="Kocaeli">Kocaeli</option>
+                        <option value="Bursa">Bursa</option>
+                    </select>
+                </div>
+                <div>
+                    <label class="hl-label">İlçe *</label>
+                    <input type="text" id="hl-input-district" placeholder="Örn: Kadıköy">
+                </div>
+            </div>
+
+            <!-- Sorular -->
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-5">
+                <div>
+                    <p class="hl-question">Aktif icra dava dosyanız var mı? *</p>
+                    <div class="grid grid-cols-2 gap-2 hl-options-grid" data-key="hasIcra">
+                        <button type="button" class="hl-opt-btn" data-val="Evet">Evet</button>
+                        <button type="button" class="hl-opt-btn" data-val="Hayır">Hayır</button>
+                    </div>
+                </div>
+                <div>
+                    <p class="hl-question">Aktif çalışıyor musunuz? / Emekli misiniz? *</p>
+                    <div class="grid grid-cols-2 gap-2 hl-options-grid" data-key="isWorking">
+                        <button type="button" class="hl-opt-btn" data-val="Evet">Evet</button>
+                        <button type="button" class="hl-opt-btn" data-val="Hayır">Hayır</button>
+                    </div>
+                </div>
+            </div>
+
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-5 mt-5">
+                <div>
+                    <p class="hl-question">Üzerinizde kayıtlı tapu var mı? *</p>
+                    <div class="grid grid-cols-2 gap-2 hl-options-grid" data-key="hasTapu">
+                        <button type="button" class="hl-opt-btn" data-val="Evet">Evet</button>
+                        <button type="button" class="hl-opt-btn" data-val="Hayır">Hayır</button>
+                    </div>
+                </div>
+                <div>
+                    <p class="hl-question">Yaş aralığınız nedir? *</p>
+                    <div class="grid grid-cols-3 gap-1 hl-options-grid" data-key="age">
+                        <button type="button" class="hl-opt-btn text-[11px]" data-val="18-26">18-26</button>
+                        <button type="button" class="hl-opt-btn text-[11px]" data-val="27-35">27-35</button>
+                        <button type="button" class="hl-opt-btn text-[11px]" data-val="36+">36 ve üzeri</button>
+                    </div>
+                </div>
+            </div>
+
+            <div class="mt-5 mb-5">
+                <p class="hl-question">Cinsiyetiniz? *</p>
+                <div class="grid grid-cols-2 gap-3 hl-options-grid" data-key="gender">
+                    <button type="button" class="hl-opt-btn" data-val="Kadın">Kadın</button>
+                    <button type="button" class="hl-opt-btn" data-val="Erkek">Erkek</button>
+                </div>
+            </div>
+
+            <button type="button" id="hl-trigger-calculate" class="hl-submit-btn">Limitimi Hesapla</button>
+        </div>
+
+        <!-- ONAY EKRANI -->
+        <div id="hl-success-content" class="hl-result-screen hl-fade-in hl-hidden text-center">
+            <div class="w-20 h-20 bg-green-100 text-green-600 rounded-full flex items-center justify-center mx-auto mb-6">
+                <svg xmlns="http://www.w3.org/2000/svg" width="40" height="40" fill="currentColor" viewBox="0 0 16 16">
+                    <path d="M13.854 3.646a.5.5 0 0 1 0 .708l-7 7a.5.5 0 0 1-.708 0l-3.5-3.5a.5.5 0 1 1 .708-.708L6.5 10.293l6.646-6.647a.5.5 0 0 1 .708 0z"/>
+                </svg>
+            </div>
+            <h2 class="text-3xl font-black mb-2 text-pink-600">Tebrikler!</h2>
+            <p class="text-gray-600 font-bold text-lg mb-6">Limitiniz başarıyla tanımlandı.</p>
+            <div class="hl-limit-box">
+                <span class="text-xs font-black text-gray-500 uppercase block mb-1">ONAYLANAN ÖN LİMİTİNİZ</span>
+                <div class="hl-limit-amount">₺<span id="hl-final-amount">0</span></div>
+            </div>
+            <div class="bg-blue-50 p-6 rounded-2xl text-left mb-8 border-l-8 border-pink-400 shadow-sm">
+                <p class="text-base text-gray-800 leading-relaxed">🚀 <strong>Şimdi Alışveriş Zamanı!</strong><br>Bu limit ile Türkiye genelindeki tüm <strong>Hedef AVM</strong> mağazalarımızdan, elden taksit avantajıyla alışverişe hemen başlayabilirsiniz.</p>
+            </div>
+            <button type="button" class="hl-reload-btn w-full py-4 bg-gray-900 text-white font-black rounded-2xl uppercase tracking-widest hover:bg-black transition-all">Yeni Sorgu Başlat</button>
+        </div>
+
+        <!-- RED EKRANI (Mağazaya Davet) -->
+        <div id="hl-error-content" class="hl-result-screen hl-fade-in hl-hidden text-center">
+            <div class="w-20 h-20 bg-pink-100 text-pink-600 rounded-full flex items-center justify-center mx-auto mb-4">
+                <svg xmlns="http://www.w3.org/2000/svg" width="40" height="40" fill="currentColor" viewBox="0 0 16 16">
+                    <path d="M8 16a8 8 0 1 0 0-16 8 8 0 0 0 0 16zm.93-9.412-1 4.705c-.07.34.029.533.304.533.194 0 .487-.07.686-.246l-.088.416c-.287.346-.92.598-1.465.598-.703 0-1.002-.422-.808-1.319l.738-3.468c.064-.293.006-.399-.287-.47l-.451-.081.082-.381 2.29-.287zM8 5.5a1 1 0 1 1 0-2 1 1 0 0 1 0 2z"/>
+                </svg>
+            </div>
+            <h2 class="text-3xl font-black mb-6 text-pink-600 leading-tight">Değerlendirme İçin<br>Şubemize Bekliyoruz</h2>
+            <div class="bg-gray-50 p-8 rounded-3xl text-left mb-8 border border-gray-200">
+                <p class="font-black text-gray-900 mb-3 uppercase text-base">SAYIN <span id="hl-error-name" class="text-pink-600">MÜŞTERİMİZ</span>,</p>
+                <p class="text-base text-gray-700 leading-relaxed mb-4">Online ön değerlendirme sistemimiz şu an için başvurunuzu onaylayamamıştır.</p>
+                <p class="text-base text-gray-800 font-bold italic border-t pt-4 border-gray-200">Sizin için en uygun ödeme seçeneklerini belirleyebilmemiz adına sizi en yakın <strong>Hedef AVM</strong> mağazamıza davet ediyoruz.</p>
+            </div>
+            <button type="button" class="hl-reload-btn w-full py-4 bg-gray-900 text-white font-black rounded-2xl border border-gray-100 uppercase tracking-widest">Geri Dön</button>
+        </div>
+
+    </div>
+</div>
+
+<script>
+(function() {
+    const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbxiaQvyZG-SdpNxDCk2flmhVEcBDz4aCWoX-OMR3-JAlk2JUTYbe5rIYLw-yGUA14uG/exec"; 
+
+    var hlState = { hasIcra: null, isWorking: null, hasTapu: null, age: null, gender: null };
+
+    // Excel Dosyasıyla (CSV) %100 Birebir Eşleşen Karar Matrisi
+    function getVariationLimit(state) {
+        // İcra Evet ise doğrudan Red (1-24 arası varyasyonlar)
+        if (state.hasIcra === 'Evet') {
+            return { approved: false, limit: "" }; 
+        }
+
+        const calisma = state.isWorking;
+        const tapu = state.hasTapu;
+        const age = state.age;
+        const gender = state.gender;
+
+        // Kural 1: Çalışıyor (Evet) ve Tapusu Var (Evet)
+        if (calisma === 'Evet' && tapu === 'Evet') {
+            if (age === '18-26') return { approved: true, limit: "150.000" }; // Varyasyon 25-26
+            if (age === '27-35') return { approved: true, limit: "200.000" }; // Varyasyon 27-28
+            if (age === '36+') return { approved: true, limit: "200.000" };   // Varyasyon 29-30
+        }
+        
+        // Kural 2: Çalışıyor (Evet) ve Tapusu Yok (Hayır)
+        if (calisma === 'Evet' && tapu === 'Hayır') {
+            if (age === '18-26') return { approved: true, limit: "150.000" }; // Varyasyon 31-32
+            if (age === '27-35') return { approved: true, limit: "150.000" }; // Varyasyon 33-34
+            if (age === '36+') return { approved: true, limit: "150.000" };   // Varyasyon 35-36
+        }
+
+        // Kural 3: Çalışmıyor (Hayır) ve Tapusu Var (Evet)
+        if (calisma === 'Hayır' && tapu === 'Evet') {
+            if (age === '18-26') return { approved: true, limit: "100.000" }; // Varyasyon 37-38
+            if (age === '27-35') {
+                if (gender === 'Kadın') return { approved: true, limit: "75.000" };  // Varyasyon 39
+                if (gender === 'Erkek') return { approved: true, limit: "100.000" }; // Varyasyon 40
+            }
+            if (age === '36+') return { approved: true, limit: "100.000" };   // Varyasyon 41-42
+        }
+
+        // Kural 4: Çalışmıyor (Hayır) ve Tapusu Yok (Hayır) -> Reddedildi / Mağaza yönlendirmesi
+        if (calisma === 'Hayır' && tapu === 'Hayır') {
+            if (gender === 'Kadın') {
+                return { approved: true, limit: "75.000" }; // Varyasyon 43, 45, 47
+            }
+            if (gender === 'Erkek') {
+                return { approved: false, limit: "" }; // Varyasyon 44, 46, 48 (MAĞAZA)
+            }
+        }
+
+        return { approved: false, limit: "" };
+    }
+
+    function runHedefCode() {
+        var wrapper = document.getElementById('hedef-limit-form-wrapper');
+        if (!wrapper) return;
+
+        document.addEventListener('click', function(e) {
+            var el = e.target;
+            var optBtn = el.closest('.hl-opt-btn');
+            if (optBtn) {
+                e.preventDefault();
+                e.stopPropagation();
+                var parent = optBtn.closest('.hl-options-grid');
+                var key = parent.getAttribute('data-key');
+                var val = optBtn.getAttribute('data-val');
+                hlState[key] = val;
+                var btns = parent.querySelectorAll('.hl-opt-btn');
+                for (var i = 0; i < btns.length; i++) { btns[i].classList.remove('active'); }
+                optBtn.classList.add('active');
+                return false;
+            }
+
+            if (el.id === 'hl-trigger-calculate') {
+                e.preventDefault();
+                calculateLimit();
+                return false;
+            }
+
+            if (el.closest('.hl-reload-btn')) {
+                window.location.reload();
+            }
+        }, true);
+
+        async function calculateLimit() {
+            var tc = document.getElementById('hl-input-tc').value.trim();
+            var name = document.getElementById('hl-input-name').value.trim();
+            var surname = document.getElementById('hl-input-surname').value.trim();
+            var phone = document.getElementById('hl-input-phone').value.trim();
+            var city = document.getElementById('hl-input-city').value;
+            var district = document.getElementById('hl-input-district').value.trim();
+            
+            if (!tc || tc.length !== 11 || !name || !surname || !phone || !city || !district || !hlState.hasIcra || !hlState.isWorking || !hlState.hasTapu || !hlState.age || !hlState.gender) {
+                var alertBox = document.getElementById('hl-alert');
+                alertBox.style.display = 'block';
+                alertBox.style.animation = 'hlSlideDownAlert 0.4s ease forwards';
+                document.getElementById('hl-main-container').classList.add('hl-shake');
+                setTimeout(function() { 
+                    alertBox.style.display = 'none'; 
+                    document.getElementById('hl-main-container').classList.remove('hl-shake');
+                }, 3000);
+                return;
+            }
+
+            var btn = document.getElementById('hl-trigger-calculate');
+            btn.innerText = "SORGULANIYOR...";
+            btn.disabled = true;
+
+            // Varyasyon Matrisi Çalıştırılıyor (100% Kararlı ve Excel Senkronize)
+            var decision = getVariationLimit(hlState);
+            var approved = decision.approved;
+            var amount = decision.limit;
+
+            if(SCRIPT_URL) {
+                try {
+                    const formData = new URLSearchParams();
+                    formData.append('tc', tc);
+                    formData.append('name', name);
+                    formData.append('surname', surname);
+                    formData.append('phone', phone);
+                    formData.append('city', city);
+                    formData.append('district', district);
+                    formData.append('hasIcra', hlState.hasIcra);
+                    formData.append('isWorking', hlState.isWorking);
+                    formData.append('hasTapu', hlState.hasTapu);
+                    formData.append('age', hlState.age);
+                    formData.append('gender', hlState.gender);
+                    formData.append('status', approved ? "KABUL EDİLDİ" : "REDDEDİLDİ");
+                    formData.append('amount', approved ? amount : "");
+
+                    fetch(SCRIPT_URL, {
+                        method: 'POST',
+                        mode: 'no-cors',
+                        cache: 'no-cache',
+                        headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+                        body: formData.toString()
+                    });
+                } catch (e) {
+                    console.error("Sheets Error:", e);
+                }
+            }
+
+            setTimeout(function() {
+                document.getElementById('hl-form-content').classList.add('hl-hidden');
+                if (approved) {
+                    document.getElementById('hl-final-amount').innerText = amount;
+                    document.getElementById('hl-success-content').classList.remove('hl-hidden');
+                } else {
+                    document.getElementById('hl-error-name').innerText = (name + " " + surname).toUpperCase();
+                    document.getElementById('hl-error-content').classList.remove('hl-hidden');
+                }
+                window.scrollTo({ top: 0, behavior: 'smooth' });
+            }, 1500);
+        }
+    }
+
+    var checkExist = setInterval(function() {
+        if (document.getElementById('hedef-limit-form-wrapper')) {
+            runHedefCode();
+            clearInterval(checkExist);
+        }
+    }, 100);
+})();
+</script>
+
+</body>
+</html>
