@@ -256,23 +256,28 @@
             </div>
 
             <!-- İletişim Bilgileri Grid -->
-            <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mb-5">
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-5">
                 <div>
                     <label class="hl-label">Telefon No *</label>
                     <input type="tel" id="hl-input-phone" placeholder="05XX XXX XX XX">
                 </div>
                 <div>
-                    <label class="hl-label">Şehir *</label>
-                    <select id="hl-input-city">
-                        <option value="" disabled selected>Şehir Seçiniz</option>
-                        <option value="İstanbul Anadolu">İstanbul Anadolu</option>
-                        <option value="Kocaeli">Kocaeli</option>
-                        <option value="Bursa">Bursa</option>
+                    <label class="hl-label">Şube Seçiniz *</label>
+                    <select id="hl-input-branch">
+                        <option value="" disabled selected>Şube Seçiniz</option>
+                        <option value="İnegöl Şubesi">İnegöl Şubesi</option>
+                        <option value="Paşabahçe Şubesi">Paşabahçe Şubesi</option>
+                        <option value="Çekmeköy Şubesi">Çekmeköy Şubesi</option>
+                        <option value="İzmit Şubesi">İzmit Şubesi</option>
+                        <option value="Gölcük Şubesi">Gölcük Şubesi</option>
+                        <option value="Körfez Şubesi">Körfez Şubesi</option>
+                        <option value="Derince Şubesi">Derince Şubesi</option>
+                        <option value="Sultanbeyli Şubesi">Sultanbeyli Şubesi</option>
+                        <option value="Yenidoğan Şubesi">Yenidoğan Şubesi</option>
+                        <option value="Kavacık Şubesi">Kavacık Şubesi</option>
+                        <option value="Çayırova Şubesi">Çayırova Şubesi</option>
+                        <option value="Gebze Şubesi">Gebze Şubesi</option>
                     </select>
-                </div>
-                <div>
-                    <label class="hl-label">İlçe *</label>
-                    <input type="text" id="hl-input-district" placeholder="Örn: Kadıköy">
                 </div>
             </div>
 
@@ -363,8 +368,8 @@
 
 <script>
 (function() {
-    // Yeni Apps Script Web App Bağlantı Linki
-    const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbyiUFif6uNWnTO4p8cVhriW5vlbKv3CxhK8JY9r8F_jYYrQfpcHwmOEdNJgLDLq3zVt/exec"; 
+    // Apps Script Web App Bağlantı Linki
+    const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbwnVC9Kv_2rqxDvlNbNYzkiBkOCw9kB5ooaXvT3A7kaOhgyGxpawazFwXVo5kYnTDClFQ/exec"; 
 
     var hlState = { hasIcra: null, isWorking: null, hasTapu: null, age: null, gender: null };
 
@@ -416,6 +421,17 @@
         return { approved: false, limit: "" };
     }
 
+    // Tarihi DD.MM.YYYY HH:mm formatına dönüştüren fonksiyon
+    function getFormattedDate() {
+        const now = new Date();
+        const dd = String(now.getDate()).padStart(2, '0');
+        const mm = String(now.getMonth() + 1).padStart(2, '0');
+        const yyyy = now.getFullYear();
+        const hh = String(now.getHours()).padStart(2, '0');
+        const min = String(now.getMinutes()).padStart(2, '0');
+        return `${dd}.${mm}.${yyyy} ${hh}:${min}`;
+    }
+
     function runHedefCode() {
         var wrapper = document.getElementById('hedef-limit-form-wrapper');
         if (!wrapper) return;
@@ -452,10 +468,9 @@
             var name = document.getElementById('hl-input-name').value.trim();
             var surname = document.getElementById('hl-input-surname').value.trim();
             var phone = document.getElementById('hl-input-phone').value.trim();
-            var city = document.getElementById('hl-input-city').value;
-            var district = document.getElementById('hl-input-district').value.trim();
+            var selectedSube = document.getElementById('hl-input-branch').value;
             
-            if (!tc || tc.length !== 11 || !name || !surname || !phone || !city || !district || !hlState.hasIcra || !hlState.isWorking || !hlState.hasTapu || !hlState.age || !hlState.gender) {
+            if (!tc || tc.length !== 11 || !name || !surname || !phone || !selectedSube || !hlState.hasIcra || !hlState.isWorking || !hlState.hasTapu || !hlState.age || !hlState.gender) {
                 var alertBox = document.getElementById('hl-alert');
                 alertBox.style.display = 'block';
                 alertBox.style.animation = 'hlSlideDownAlert 0.4s ease forwards';
@@ -475,29 +490,55 @@
             var approved = decision.approved;
             var amount = decision.limit;
 
+            // 1. Şube Eşleştirme Emniyeti
+            let branchName = "";
+            if(selectedSube.includes("İnegöl")) branchName = "İnegöl Şubesi";
+            else if(selectedSube.includes("Paşabahçe")) branchName = "Paşabahçe Şubesi";
+            else if(selectedSube.includes("Çekmeköy")) branchName = "Çekmeköy Şubesi";
+            else if(selectedSube.includes("İzmit")) branchName = "İzmit Şubesi";
+            else if(selectedSube.includes("Gölcük")) branchName = "Gölcük Şubesi";
+            else if(selectedSube.includes("Körfez")) branchName = "Körfez Şubesi";
+            else if(selectedSube.includes("Derince")) branchName = "Derince Şubesi";
+            else if(selectedSube.includes("Sultanbeyli")) branchName = "Sultanbeyli Şubesi";
+            else if(selectedSube.includes("Yenidoğan")) branchName = "Yenidoğan Şubesi";
+            else if(selectedSube.includes("Kavacık")) branchName = "Kavacık Şubesi";
+            else if(selectedSube.includes("Çayırova")) branchName = "Çayırova Şubesi";
+            else if(selectedSube.includes("Gebze")) branchName = "Gebze Şubesi";
+
+            // Sonuca Göre Ürün Adının Belirlenmesi
+            let productName = "";
+            if (approved) {
+                productName = "LİMİT ÖĞREN - " + amount;
+            } else {
+                productName = "LİMİT ÖĞREN BİLGİ";
+            }
+
             if(SCRIPT_URL) {
                 try {
-                    const formData = new URLSearchParams();
-                    formData.append('tc', tc);
-                    formData.append('name', name);
-                    formData.append('surname', surname);
-                    formData.append('phone', phone);
-                    formData.append('city', city);
-                    formData.append('district', district);
-                    formData.append('hasIcra', hlState.hasIcra);
-                    formData.append('isWorking', hlState.isWorking);
-                    formData.append('hasTapu', hlState.hasTapu);
-                    formData.append('age', hlState.age);
-                    formData.append('gender', hlState.gender);
-                    formData.append('status', approved ? "KABUL EDİLDİ" : "REDDEDİLDİ");
-                    formData.append('amount', approved ? amount : "");
+                    // Apps Script'e JSON formatında bulk data paketi hazırlanıyor
+                    const payloadData = {
+                        action: "addCustomersBulk",
+                        data: [
+                            {
+                                date: getFormattedDate(),
+                                branch: branchName,
+                                status: "aranmadı",
+                                name: (name + " " + surname).toUpperCase(),
+                                contact: phone,
+                                customerNo: tc, // TC Kimlik Numarası müşteri no sütunu için gönderiliyor
+                                media: "Web Sitesi Form", // G sütunu Apps Script'te media alanı ile beslendiği için buraya "Web Sitesi Form" atandı.
+                                category: "", // Kategori boş bırakıldı
+                                product: productName
+                            }
+                        ]
+                    };
 
                     fetch(SCRIPT_URL, {
                         method: 'POST',
                         mode: 'no-cors',
                         cache: 'no-cache',
-                        headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
-                        body: formData.toString()
+                        headers: { 'Content-Type': 'text/plain' },
+                        body: JSON.stringify(payloadData)
                     });
                 } catch (e) {
                     console.error("Sheets Error:", e);
