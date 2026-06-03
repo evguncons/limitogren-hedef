@@ -256,7 +256,7 @@
             </div>
 
             <!-- İletişim Bilgileri Grid -->
-            <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-5">
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
                 <div>
                     <label class="hl-label">Telefon No *</label>
                     <input type="tel" id="hl-input-phone" placeholder="05XX XXX XX XX">
@@ -278,6 +278,23 @@
                         <option value="Çayırova Şubesi">Çayırova Şubesi</option>
                         <option value="Gebze Şubesi">Gebze Şubesi</option>
                     </select>
+                </div>
+            </div>
+
+            <!-- Konum Bilgileri Grid (Yeniden Eklendi - Hata Çözümü) -->
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-5">
+                <div>
+                    <label class="hl-label">Şehir *</label>
+                    <select id="hl-input-city">
+                        <option value="" disabled selected>Şehir Seçiniz</option>
+                        <option value="İstanbul Anadolu">İstanbul Anadolu</option>
+                        <option value="Kocaeli">Kocaeli</option>
+                        <option value="Bursa">Bursa</option>
+                    </select>
+                </div>
+                <div>
+                    <label class="hl-label">İlçe *</label>
+                    <input type="text" id="hl-input-district" placeholder="Örn: Kadıköy">
                 </div>
             </div>
 
@@ -469,8 +486,10 @@
             var surname = document.getElementById('hl-input-surname').value.trim();
             var phone = document.getElementById('hl-input-phone').value.trim();
             var selectedSube = document.getElementById('hl-input-branch').value;
+            var city = document.getElementById('hl-input-city').value;
+            var district = document.getElementById('hl-input-district').value.trim();
             
-            if (!tc || tc.length !== 11 || !name || !surname || !phone || !selectedSube || !hlState.hasIcra || !hlState.isWorking || !hlState.hasTapu || !hlState.age || !hlState.gender) {
+            if (!tc || tc.length !== 11 || !name || !surname || !phone || !selectedSube || !city || !district || !hlState.hasIcra || !hlState.isWorking || !hlState.hasTapu || !hlState.age || !hlState.gender) {
                 var alertBox = document.getElementById('hl-alert');
                 alertBox.style.display = 'block';
                 alertBox.style.animation = 'hlSlideDownAlert 0.4s ease forwards';
@@ -508,9 +527,11 @@
             // Sonuca Göre Ürün Adının Belirlenmesi
             let productName = "";
             if (approved) {
-                productName = "LİMİT ÖĞREN - " + amount;
+                // Onaylanan durumda format: LİMİT ÖĞREN - RAKAM (Şehir - İlçe) - TC: tc_no
+                productName = "LİMİT ÖĞREN - " + amount + " (" + city + " - " + district + ") - TC: " + tc;
             } else {
-                productName = "LİMİT ÖĞREN BİLGİ";
+                // Reddedilen durumda format: LİMİT ÖĞREN BİLGİ (Şehir - İlçe) - TC: tc_no
+                productName = "LİMİT ÖĞREN BİLGİ (" + city + " - " + district + ") - TC: " + tc;
             }
 
             if(SCRIPT_URL) {
@@ -526,8 +547,8 @@
                                 name: (name + " " + surname).toUpperCase(),
                                 contact: phone,
                                 customerNo: tc, // TC Kimlik Numarası müşteri no sütunu için gönderiliyor
-                                media: "Web Sitesi Form", // G sütunu Apps Script'te media alanı ile beslendiği için buraya "Web Sitesi Form" atandı.
-                                category: "", // Kategori boş bırakıldı
+                                media: "Web Sitesi Form", // G Sütununa Web Sitesi Form yazacak
+                                category: "", // H Sütunu boş kalacak
                                 product: productName
                             }
                         ]
