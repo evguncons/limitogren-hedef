@@ -200,6 +200,17 @@
             letter-spacing: -2px;
         }
 
+        /* Yükleniyor (Loading) Animasyonu İçin Yeni CSS Sınıfı */
+        @keyframes hlSpin {
+            to { transform: rotate(360deg); }
+        }
+        .hl-spinner {
+            animation: hlSpin 1s linear infinite;
+            display: inline-block;
+            margin-right: 8px;
+            vertical-align: middle;
+        }
+
         #hl-alert {
             position: fixed;
             top: 20px;
@@ -281,7 +292,7 @@
                 </div>
             </div>
 
-            <!-- Konum Bilgileri Grid (Yeniden Eklendi - Hata Çözümü) -->
+            <!-- Konum Bilgileri Grid -->
             <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-5">
                 <div>
                     <label class="hl-label">Şehir *</label>
@@ -380,6 +391,23 @@
             <button type="button" class="hl-reload-btn w-full py-4 bg-gray-900 text-white font-black rounded-2xl border border-gray-100 uppercase tracking-widest">Geri Dön</button>
         </div>
 
+        <!-- MÜKERRER KAYIT UYARI EKRANI -->
+        <div id="hl-duplicate-content" class="hl-result-screen hl-fade-in hl-hidden text-center">
+            <div class="w-20 h-20 bg-amber-100 text-amber-600 rounded-full flex items-center justify-center mx-auto mb-6">
+                <svg xmlns="http://www.w3.org/2000/svg" width="40" height="40" fill="currentColor" viewBox="0 0 16 16">
+                    <path d="M8.982 1.566a1.13 1.13 0 0 0-1.96 0L.165 13.233c-.457.778.091 1.767.98 1.767h13.713c.889 0 1.438-.99.98-1.767L8.982 1.566zM8 5c.535 0 .954.462.9.995l-.35 3.507a.552.552 0 0 1-1.1 0L7.1 5.995A.905.905 0 0 1 8 5zm.002 6a1 1 0 1 1 0 2 1 1 0 0 1 0-2z"/>
+                </svg>
+            </div>
+            <h2 class="text-3xl font-black mb-2 text-amber-600">Tekrar Gönderim Sınırı!</h2>
+            <p class="text-gray-600 font-bold text-lg mb-6">Bu telefon numarasına ait bir başvuru zaten var.</p>
+            <div class="bg-amber-50 p-8 rounded-3xl text-left mb-8 border border-amber-200">
+                <p class="font-black text-amber-900 mb-3 uppercase text-base">SAYIN BAŞVURU SAHİBİ,</p>
+                <p class="text-base text-gray-700 leading-relaxed mb-4">Girdiğiniz <strong>Telefon Numarası</strong> ile bu şubede ve bu ay içerisinde zaten bir değerlendirme yapılmıştır.</p>
+                <p class="text-base text-gray-800 font-bold italic border-t pt-4 border-amber-200">Kayıtların karışmaması ve işlem güvenliği adına mükerrer şekilde tekrar form gönderemezsiniz.</p>
+            </div>
+            <button type="button" class="hl-reload-btn w-full py-4 bg-gray-900 text-white font-black rounded-2xl border border-gray-100 uppercase tracking-widest hover:bg-black transition-all">Yeni Sorgu Başlat</button>
+        </div>
+
     </div>
 </div>
 
@@ -401,21 +429,18 @@
         const age = state.age;
         const gender = state.gender;
 
-        // Kural 1: Çalışıyor (Evet) ve Tapusu Var (Evet)
         if (calisma === 'Evet' && tapu === 'Evet') {
             if (age === '18-26') return { approved: true, limit: "150.000" };
             if (age === '27-35') return { approved: true, limit: "200.000" };
             if (age === '36+') return { approved: true, limit: "200.000" };
         }
         
-        // Kural 2: Çalışıyor (Evet) ve Tapusu Yok (Hayır)
         if (calisma === 'Evet' && tapu === 'Hayır') {
             if (age === '18-26') return { approved: true, limit: "150.000" };
             if (age === '27-35') return { approved: true, limit: "150.000" };
             if (age === '36+') return { approved: true, limit: "150.000" };
         }
 
-        // Kural 3: Çalışmıyor (Hayır) ve Tapusu Var (Evet)
         if (calisma === 'Hayır' && tapu === 'Evet') {
             if (age === '18-26') return { approved: true, limit: "100.000" };
             if (age === '27-35') {
@@ -425,7 +450,6 @@
             if (age === '36+') return { approved: true, limit: "100.000" };
         }
 
-        // Kural 4: Çalışmıyor (Hayır) ve Tapusu Yok (Hayır) -> Reddedildi / Mağaza yönlendirmesi
         if (calisma === 'Hayır' && tapu === 'Hayır') {
             if (gender === 'Kadın') {
                 return { approved: true, limit: "75.000" };
@@ -438,7 +462,7 @@
         return { approved: false, limit: "" };
     }
 
-    // Tarihi DD.MM.YYYY HH:mm formatına dönüştüren fonksiyon
+    // Tarihi formatlama
     function getFormattedDate() {
         const now = new Date();
         const dd = String(now.getDate()).padStart(2, '0');
@@ -502,14 +526,22 @@
             }
 
             var btn = document.getElementById('hl-trigger-calculate');
-            btn.innerText = "SORGULANIYOR...";
+            
+            // SORGULANIYOR metninin yanına şık bir SVG Loading İkonu eklendi
+            btn.innerHTML = `<svg class="hl-spinner w-5 h-5 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+                <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+            </svg>SORGULANIYOR...`;
+            
             btn.disabled = true;
+            btn.style.opacity = "0.8"; // Butonun tıklandığını hissettirmek için hafif şeffaflaştırıldı
+            btn.style.cursor = "not-allowed";
 
             var decision = getVariationLimit(hlState);
             var approved = decision.approved;
             var amount = decision.limit;
 
-            // 1. Şube Eşleştirme Emniyeti
+            // Şube Adını Ayarlama
             let branchName = "";
             if(selectedSube.includes("İnegöl")) branchName = "İnegöl Şubesi";
             else if(selectedSube.includes("Paşabahçe")) branchName = "Paşabahçe Şubesi";
@@ -524,57 +556,102 @@
             else if(selectedSube.includes("Çayırova")) branchName = "Çayırova Şubesi";
             else if(selectedSube.includes("Gebze")) branchName = "Gebze Şubesi";
 
-            // Sonuca Göre Ürün Adının Belirlenmesi
+            // Ürün Adı Formatı (İstenilen 3 veri tire ve parantezle birleştirildi)
             let productName = "";
             if (approved) {
-                // Onaylanan durumda format: LİMİT ÖĞREN - RAKAM (Şehir - İlçe) - TC: tc_no
                 productName = "LİMİT ÖĞREN - " + amount + " (" + city + " - " + district + ") - TC: " + tc;
             } else {
-                // Reddedilen durumda format: LİMİT ÖĞREN BİLGİ (Şehir - İlçe) - TC: tc_no
                 productName = "LİMİT ÖĞREN BİLGİ (" + city + " - " + district + ") - TC: " + tc;
             }
 
+            var isDuplicate = false;
+
             if(SCRIPT_URL) {
-                try {
-                    // Apps Script'e JSON formatında bulk data paketi hazırlanıyor
-                    const payloadData = {
-                        action: "addCustomersBulk",
-                        data: [
-                            {
+                // 1. ÖN KORUMA: Tarayıcı hafızasını kontrol et (Hızlı spam engeli)
+                if (localStorage.getItem("hedef_last_phone") === phone) {
+                    isDuplicate = true;
+                }
+
+                // 2. SUNUCU KORUMASI: Sadece aktif ayın verilerini çek ve telefon numaralarını tara
+                if (!isDuplicate) {
+                    try {
+                        const response = await fetch(SCRIPT_URL); 
+                        if (response.ok) {
+                            const dashData = await response.json();
+                            if (dashData && dashData.records) {
+                                // Sadece rakamları ayıkla
+                                const cleanInputPhone = phone.replace(/[^\d]/g, '');
+                                
+                                // Tablodaki tüm aktif ay kayıtlarını döngüye al
+                                for (let i = 0; i < dashData.records.length; i++) {
+                                    let rec = dashData.records[i];
+                                    let recPhone = String(rec.contact || "").replace(/[^\d]/g, '');
+                                    
+                                    // Eğer şube eşleşiyorsa ve telefon no aynısıysa mükerrer say
+                                    if (rec.branch === branchName && recPhone === cleanInputPhone && recPhone.length > 5) {
+                                        isDuplicate = true;
+                                        break; // Döngüyü kır, taramayı bitir
+                                    }
+                                }
+                            }
+                        }
+                    } catch (e) {
+                        console.warn("Canlı mükerrer kontrolü atlandı (Google Sheet JSON hatası veya bağlantı problemi):", e);
+                    }
+                }
+
+                // 3. E-TABLOYA YAZ: Mükerrer değilse Sheets'e veriyi POST et
+                if (!isDuplicate) {
+                    try {
+                        // Sütun sıralamasını Apps Script tarafındaki kolon yapınıza göre ayarladık:
+                        // Sizin Scriptinizde G (6. Index) Media, H (7. Index) Category olduğu için ters gönderiyoruz.
+                        // Böylece tablonuzda G sütununa "Web Sitesi Form", H sütununa BOŞ değer yazılacak.
+                        const payloadData = {
+                            action: "addCustomersBulk",
+                            data: [{
                                 date: getFormattedDate(),
                                 branch: branchName,
                                 status: "aranmadı",
                                 name: (name + " " + surname).toUpperCase(),
                                 contact: phone,
-                                customerNo: tc, // TC Kimlik Numarası müşteri no sütunu için gönderiliyor
-                                media: "Web Sitesi Form", // G Sütununa Web Sitesi Form yazacak
-                                category: "", // H Sütunu boş kalacak
-                                product: productName
-                            }
-                        ]
-                    };
+                                customerNo: tc, 
+                                media: "Web Sitesi Form", // Tabloda G Sütununa gidecek
+                                category: "",             // Tabloda H Sütunu boş kalacak
+                                product: productName      // Tabloda I Sütununa gidecek
+                            }]
+                        };
 
-                    fetch(SCRIPT_URL, {
-                        method: 'POST',
-                        mode: 'no-cors',
-                        cache: 'no-cache',
-                        headers: { 'Content-Type': 'text/plain' },
-                        body: JSON.stringify(payloadData)
-                    });
-                } catch (e) {
-                    console.error("Sheets Error:", e);
+                        await fetch(SCRIPT_URL, {
+                            method: 'POST',
+                            mode: 'no-cors', // POST işlemindeki CORS engellemelerini tamamen bypass eder
+                            cache: 'no-cache',
+                            headers: { 'Content-Type': 'text/plain' },
+                            body: JSON.stringify(payloadData)
+                        });
+
+                        // Veri başarıyla gittiyse tarayıcı hafızasına spam engeli için bu numarayı kaydet
+                        localStorage.setItem("hedef_last_phone", phone);
+                    } catch (e) {
+                        console.error("Sheets Yazma Hatası:", e);
+                    }
                 }
             }
 
+            // SONUÇ EKRANINI GÖSTERME
             setTimeout(function() {
                 document.getElementById('hl-form-content').classList.add('hl-hidden');
-                if (approved) {
+                
+                if (isDuplicate) {
+                    // Mükerrer kayıt saptandıysa uyarı ekranı
+                    document.getElementById('hl-duplicate-content').classList.remove('hl-hidden');
+                } else if (approved) {
                     document.getElementById('hl-final-amount').innerText = amount;
                     document.getElementById('hl-success-content').classList.remove('hl-hidden');
                 } else {
                     document.getElementById('hl-error-name').innerText = (name + " " + surname).toUpperCase();
                     document.getElementById('hl-error-content').classList.remove('hl-hidden');
                 }
+                
                 window.scrollTo({ top: 0, behavior: 'smooth' });
             }, 1500);
         }
