@@ -241,6 +241,16 @@
 <div id="hedef-limit-form-wrapper">
     <div id="hl-alert">Lütfen tüm alanları eksiksiz doldurunuz!</div>
 
+    <!-- FULL SCREEN YÜKLEME EKRANI (OVERLAY) -->
+    <div id="hl-loading-overlay" class="hl-hidden" style="position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.7); backdrop-filter: blur(8px); z-index: 9999; display: flex; flex-direction: column; align-items: center; justify-content: center; color: white;">
+        <svg class="hl-spinner w-16 h-16 text-pink-500 mb-6" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+            <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+            <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+        </svg>
+        <h2 class="text-3xl font-black mb-2 tracking-wide text-center">Sorgulanıyor...</h2>
+        <p class="text-base font-medium opacity-80 text-center">Lütfen bekleyiniz, limitiniz hesaplanıyor.</p>
+    </div>
+
     <div class="hl-container hl-slide-up" id="hl-main-container">
         
         <!-- FORM EKRANI -->
@@ -526,22 +536,15 @@
             }
 
             var btn = document.getElementById('hl-trigger-calculate');
-            
-            // SORGULANIYOR metninin yanına şık bir SVG Loading İkonu eklendi
-            btn.innerHTML = `<svg class="hl-spinner w-5 h-5 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
-                <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
-                <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
-            </svg>SORGULANIYOR...`;
-            
             btn.disabled = true;
-            btn.style.opacity = "0.8"; // Butonun tıklandığını hissettirmek için hafif şeffaflaştırıldı
-            btn.style.cursor = "not-allowed";
+
+            // Tam Ekran Yükleme Animasyonunu Göster
+            document.getElementById('hl-loading-overlay').classList.remove('hl-hidden');
 
             var decision = getVariationLimit(hlState);
             var approved = decision.approved;
             var amount = decision.limit;
 
-            // Şube Adını Ayarlama
             let branchName = "";
             if(selectedSube.includes("İnegöl")) branchName = "İnegöl Şubesi";
             else if(selectedSube.includes("Paşabahçe")) branchName = "Paşabahçe Şubesi";
@@ -556,7 +559,6 @@
             else if(selectedSube.includes("Çayırova")) branchName = "Çayırova Şubesi";
             else if(selectedSube.includes("Gebze")) branchName = "Gebze Şubesi";
 
-            // Ürün Adı Formatı (İstenilen 3 veri tire ve parantezle birleştirildi)
             let productName = "";
             if (approved) {
                 productName = "LİMİT ÖĞREN - " + amount + " (" + city + " - " + district + ") - TC: " + tc;
@@ -567,12 +569,7 @@
             var isDuplicate = false;
 
             if(SCRIPT_URL) {
-                // 1. ÖN KORUMA: Tarayıcı hafızasını kontrol et (Hızlı spam engeli)
-                if (localStorage.getItem("hedef_last_phone") === phone) {
-                    isDuplicate = true;
-                }
-
-                // 2. SUNUCU KORUMASI: Sadece aktif ayın verilerini çek ve telefon numaralarını tara
+                // SUNUCU KORUMASI: Sadece aktif ayın verilerini çek ve telefon numaralarını tara
                 if (!isDuplicate) {
                     try {
                         const response = await fetch(SCRIPT_URL); 
@@ -600,49 +597,47 @@
                     }
                 }
 
-                // 3. E-TABLOYA YAZ: Mükerrer değilse Sheets'e veriyi POST et
+                // E-TABLOYA YAZ: Mükerrer değilse Sheets'e veriyi POST et
                 if (!isDuplicate) {
                     try {
-                        // Sütun sıralamasını Apps Script tarafındaki kolon yapınıza göre ayarladık:
-                        // Sizin Scriptinizde G (6. Index) Media, H (7. Index) Category olduğu için ters gönderiyoruz.
-                        // Böylece tablonuzda G sütununa "Web Sitesi Form", H sütununa BOŞ değer yazılacak.
                         const payloadData = {
                             action: "addCustomersBulk",
-                            data: [{
-                                date: getFormattedDate(),
-                                branch: branchName,
-                                status: "aranmadı",
-                                name: (name + " " + surname).toUpperCase(),
-                                contact: phone,
-                                customerNo: tc, 
-                                media: "Web Sitesi Form", // Tabloda G Sütununa gidecek
-                                category: "",             // Tabloda H Sütunu boş kalacak
-                                product: productName      // Tabloda I Sütununa gidecek
-                            }]
+                            data: [
+                                {
+                                    date: getFormattedDate(),
+                                    branch: branchName,
+                                    status: "aranmadı",
+                                    name: (name + " " + surname).toUpperCase(),
+                                    contact: phone,
+                                    customerNo: tc, 
+                                    media: "Web Sitesi Form", // G sütununa yazılacak
+                                    category: "",             // H sütununa yazılacak (Boş)
+                                    product: productName      // I sütununa yazılacak formatlı veri
+                                }
+                            ]
                         };
 
                         await fetch(SCRIPT_URL, {
                             method: 'POST',
-                            mode: 'no-cors', // POST işlemindeki CORS engellemelerini tamamen bypass eder
+                            mode: 'no-cors',
                             cache: 'no-cache',
                             headers: { 'Content-Type': 'text/plain' },
                             body: JSON.stringify(payloadData)
                         });
 
-                        // Veri başarıyla gittiyse tarayıcı hafızasına spam engeli için bu numarayı kaydet
-                        localStorage.setItem("hedef_last_phone", phone);
                     } catch (e) {
-                        console.error("Sheets Yazma Hatası:", e);
+                        console.error("Sheets Error:", e);
                     }
                 }
             }
 
-            // SONUÇ EKRANINI GÖSTERME
+            // SONUÇ EKRANINI GÖSTERME (Animasyon Hissi İçin Gecikme)
             setTimeout(function() {
+                // Yükleme ekranını kapat
+                document.getElementById('hl-loading-overlay').classList.add('hl-hidden');
                 document.getElementById('hl-form-content').classList.add('hl-hidden');
                 
                 if (isDuplicate) {
-                    // Mükerrer kayıt saptandıysa uyarı ekranı
                     document.getElementById('hl-duplicate-content').classList.remove('hl-hidden');
                 } else if (approved) {
                     document.getElementById('hl-final-amount').innerText = amount;
