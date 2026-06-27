@@ -26,7 +26,6 @@
             padding: 15px;
             box-sizing: border-box;
             
-            /* Arkaplan Görseli */
             background-color: #fdf2f8; 
             background-image: url('https://www.upload.ee/image/19322971/magnific_modern-ecommerce-campaign_2939673108.png');
             background-size: cover;
@@ -45,7 +44,6 @@
         }
 
         #hedef-limit-form-wrapper .hl-container {
-            /* Tam Beyaz, Opak ve Genişletilmiş Form Kartı */
             background: #ffffff !important;
             opacity: 1 !important;
             width: 100%;
@@ -66,7 +64,6 @@
             }
         }
 
-        /* Animasyonlar */
         .hl-fade-in { animation: hlFadeIn 0.8s ease-out forwards; }
         .hl-slide-up { animation: hlSlideUp 0.6s ease-out forwards; }
         .hl-shake { animation: hlShake 0.5s ease-in-out; }
@@ -180,9 +177,17 @@
             transition: all 0.3s ease;
         }
 
-        #hedef-limit-form-wrapper .hl-submit-btn:hover {
+        #hedef-limit-form-wrapper .hl-submit-btn:hover:not(:disabled) {
             transform: translateY(-2px);
             opacity: 0.95;
+        }
+
+        #hedef-limit-form-wrapper .hl-submit-btn:disabled {
+            background: #cbd5e1;
+            cursor: not-allowed;
+            transform: none;
+            box-shadow: none;
+            color: #64748b !important;
         }
 
         #hedef-limit-form-wrapper .hl-limit-box {
@@ -200,17 +205,6 @@
             letter-spacing: -2px;
         }
 
-        /* Yükleniyor (Loading) Animasyonu İçin Yeni CSS Sınıfı */
-        @keyframes hlSpin {
-            to { transform: rotate(360deg); }
-        }
-        .hl-spinner {
-            animation: hlSpin 1s linear infinite;
-            display: inline-block;
-            margin-right: 8px;
-            vertical-align: middle;
-        }
-
         #hl-alert {
             position: fixed;
             top: 20px;
@@ -225,6 +219,7 @@
             z-index: 10000;
             display: none;
             box-shadow: 0 20px 40px rgba(0,0,0,0.3);
+            white-space: nowrap;
         }
 
         .hl-hidden { display: none !important; }
@@ -241,14 +236,31 @@
 <div id="hedef-limit-form-wrapper">
     <div id="hl-alert">Lütfen tüm alanları eksiksiz doldurunuz!</div>
 
-    <!-- FULL SCREEN YÜKLEME EKRANI (OVERLAY) -->
-    <div id="hl-loading-overlay" class="hl-hidden" style="position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.7); backdrop-filter: blur(8px); z-index: 9999; display: flex; flex-direction: column; align-items: center; justify-content: center; color: white;">
-        <svg class="hl-spinner w-16 h-16 text-pink-500 mb-6" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
-            <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
-            <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
-        </svg>
-        <h2 class="text-3xl font-black mb-2 tracking-wide text-center">Sorgulanıyor...</h2>
-        <p class="text-base font-medium opacity-80 text-center">Lütfen bekleyiniz, limitiniz hesaplanıyor.</p>
+    <!-- SPAM (MÜKERRER) KONTROLÜ İÇİN ÖZEL UYARI POPUP'I -->
+    <div id="hl-spam-modal" class="fixed inset-0 z-[10005] bg-black bg-opacity-60 flex items-center justify-center hl-hidden hl-fade-in" style="backdrop-filter: blur(2px);">
+        <div class="bg-white rounded-3xl p-6 md:p-8 max-w-sm w-[90%] mx-auto shadow-2xl text-center hl-slide-up relative">
+            <div class="w-16 h-16 bg-red-100 text-red-500 rounded-full flex items-center justify-center mx-auto mb-5">
+                <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" fill="currentColor" viewBox="0 0 16 16">
+                    <path d="M8 15A7 7 0 1 1 8 1a7 7 0 0 1 0 14m0 1A8 8 0 1 0 8 0a8 8 0 0 0 0 16"/>
+                    <path d="M7.002 11a1 1 0 1 1 2 0 1 1 0 0 1-2 0zM7.1 4.995a.905.905 0 1 1 1.8 0l-.35 3.507a.552.552 0 0 1-1.1 0z"/>
+                </svg>
+            </div>
+            <h3 class="text-2xl font-black text-gray-900 mb-2">Uyarı!</h3>
+            <p class="text-gray-600 font-medium mb-6 leading-relaxed">Bu ay için başvurunuz sistemimizde kayıtlıdır.<br>Lütfen daha sonra tekrar deneyiniz.</p>
+            <button type="button" id="hl-close-modal" class="w-full py-3 bg-gray-900 text-white font-bold rounded-xl hover:bg-black transition-colors uppercase tracking-wide">Tamam</button>
+        </div>
+    </div>
+
+    <!-- YÜKLENİYOR (LOADING) ANİMASYONLU EKRAN -->
+    <div id="hl-loading-modal" class="fixed inset-0 z-[10005] bg-black bg-opacity-60 flex items-center justify-center hl-hidden hl-fade-in" style="backdrop-filter: blur(2px);">
+        <div class="bg-white rounded-3xl p-8 max-w-sm w-[80%] mx-auto shadow-2xl text-center flex flex-col items-center">
+            <svg class="animate-spin h-14 w-14 text-pink-600 mb-5" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+                <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+            </svg>
+            <h3 class="text-2xl font-black text-gray-900 mb-2">Sorgulanıyor...</h3>
+            <p class="text-gray-500 font-medium text-sm">Lütfen bekleyiniz, bilgileriniz kontrol ediliyor ve limitiniz hesaplanıyor.</p>
+        </div>
     </div>
 
     <div class="hl-container hl-slide-up" id="hl-main-container">
@@ -277,10 +289,23 @@
             </div>
 
             <!-- İletişim Bilgileri Grid -->
-            <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
+            <div class="grid grid-cols-1 md:grid-cols-4 gap-3 mb-5">
                 <div>
                     <label class="hl-label">Telefon No *</label>
                     <input type="tel" id="hl-input-phone" placeholder="05XX XXX XX XX">
+                </div>
+                <div>
+                    <label class="hl-label">Şehir *</label>
+                    <select id="hl-input-city">
+                        <option value="" disabled selected>Şehir Seçiniz</option>
+                        <option value="İstanbul Anadolu">İstanbul Anadolu</option>
+                        <option value="Kocaeli">Kocaeli</option>
+                        <option value="Bursa">Bursa</option>
+                    </select>
+                </div>
+                <div>
+                    <label class="hl-label">İlçe *</label>
+                    <input type="text" id="hl-input-district" placeholder="Örn: Kadıköy">
                 </div>
                 <div>
                     <label class="hl-label">Şube Seçiniz *</label>
@@ -299,23 +324,6 @@
                         <option value="Çayırova Şubesi">Çayırova Şubesi</option>
                         <option value="Gebze Şubesi">Gebze Şubesi</option>
                     </select>
-                </div>
-            </div>
-
-            <!-- Konum Bilgileri Grid -->
-            <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-5">
-                <div>
-                    <label class="hl-label">Şehir *</label>
-                    <select id="hl-input-city">
-                        <option value="" disabled selected>Şehir Seçiniz</option>
-                        <option value="İstanbul Anadolu">İstanbul Anadolu</option>
-                        <option value="Kocaeli">Kocaeli</option>
-                        <option value="Bursa">Bursa</option>
-                    </select>
-                </div>
-                <div>
-                    <label class="hl-label">İlçe *</label>
-                    <input type="text" id="hl-input-district" placeholder="Örn: Kadıköy">
                 </div>
             </div>
 
@@ -401,38 +409,30 @@
             <button type="button" class="hl-reload-btn w-full py-4 bg-gray-900 text-white font-black rounded-2xl border border-gray-100 uppercase tracking-widest">Geri Dön</button>
         </div>
 
-        <!-- MÜKERRER KAYIT UYARI EKRANI -->
-        <div id="hl-duplicate-content" class="hl-result-screen hl-fade-in hl-hidden text-center">
-            <div class="w-20 h-20 bg-amber-100 text-amber-600 rounded-full flex items-center justify-center mx-auto mb-6">
-                <svg xmlns="http://www.w3.org/2000/svg" width="40" height="40" fill="currentColor" viewBox="0 0 16 16">
-                    <path d="M8.982 1.566a1.13 1.13 0 0 0-1.96 0L.165 13.233c-.457.778.091 1.767.98 1.767h13.713c.889 0 1.438-.99.98-1.767L8.982 1.566zM8 5c.535 0 .954.462.9.995l-.35 3.507a.552.552 0 0 1-1.1 0L7.1 5.995A.905.905 0 0 1 8 5zm.002 6a1 1 0 1 1 0 2 1 1 0 0 1 0-2z"/>
-                </svg>
-            </div>
-            <h2 class="text-3xl font-black mb-2 text-amber-600">Tekrar Gönderim Sınırı!</h2>
-            <p class="text-gray-600 font-bold text-lg mb-6">Bu telefon numarasına ait bir başvuru zaten var.</p>
-            <div class="bg-amber-50 p-8 rounded-3xl text-left mb-8 border border-amber-200">
-                <p class="font-black text-amber-900 mb-3 uppercase text-base">SAYIN BAŞVURU SAHİBİ,</p>
-                <p class="text-base text-gray-700 leading-relaxed mb-4">Girdiğiniz <strong>Telefon Numarası</strong> ile bu şubede ve bu ay içerisinde zaten bir değerlendirme yapılmıştır.</p>
-                <p class="text-base text-gray-800 font-bold italic border-t pt-4 border-amber-200">Kayıtların karışmaması ve işlem güvenliği adına mükerrer şekilde tekrar form gönderemezsiniz.</p>
-            </div>
-            <button type="button" class="hl-reload-btn w-full py-4 bg-gray-900 text-white font-black rounded-2xl border border-gray-100 uppercase tracking-widest hover:bg-black transition-all">Yeni Sorgu Başlat</button>
-        </div>
-
     </div>
 </div>
 
 <script>
 (function() {
-    // Apps Script Web App Bağlantı Linki
-    const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbwnVC9Kv_2rqxDvlNbNYzkiBkOCw9kB5ooaXvT3A7kaOhgyGxpawazFwXVo5kYnTDClFQ/exec"; 
+    const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbxiaQvyZG-SdpNxDCk2flmhVEcBDz4aCWoX-OMR3-JAlk2JUTYbe5rIYLw-yGUA14uG/exec"; 
 
     var hlState = { hasIcra: null, isWorking: null, hasTapu: null, age: null, gender: null };
 
-    // Karar Matrisi
-    function getVariationLimit(state) {
-        if (state.hasIcra === 'Evet') {
-            return { approved: false, limit: "" }; 
+    // --- SPAM KONTROLÜ (LOCAL STORAGE) - KİŞİ BAZLI ---
+    function checkLocalStorageSpam(phone) {
+        if (localStorage.getItem("hedef_limit_phone_" + phone)) {
+            return true;
         }
+        return false;
+    }
+
+    function setLocalStorageSpam(phone) {
+        localStorage.setItem("hedef_limit_phone_" + phone, "true");
+    }
+
+    // --- VARYASYON (LİMİT) MATRİSİ ---
+    function getVariationLimit(state) {
+        if (state.hasIcra === 'Evet') return { approved: false, limit: "" }; 
 
         const calisma = state.isWorking;
         const tapu = state.hasTapu;
@@ -440,47 +440,44 @@
         const gender = state.gender;
 
         if (calisma === 'Evet' && tapu === 'Evet') {
-            if (age === '18-26') return { approved: true, limit: "150.000" };
-            if (age === '27-35') return { approved: true, limit: "200.000" };
-            if (age === '36+') return { approved: true, limit: "200.000" };
+            if (age === '18-26') return { approved: true, limit: "150.000" }; 
+            if (age === '27-35') return { approved: true, limit: "200.000" }; 
+            if (age === '36+') return { approved: true, limit: "200.000" };   
         }
         
         if (calisma === 'Evet' && tapu === 'Hayır') {
-            if (age === '18-26') return { approved: true, limit: "150.000" };
-            if (age === '27-35') return { approved: true, limit: "150.000" };
-            if (age === '36+') return { approved: true, limit: "150.000" };
+            if (age === '18-26') return { approved: true, limit: "150.000" }; 
+            if (age === '27-35') return { approved: true, limit: "150.000" }; 
+            if (age === '36+') return { approved: true, limit: "150.000" };   
         }
 
         if (calisma === 'Hayır' && tapu === 'Evet') {
-            if (age === '18-26') return { approved: true, limit: "100.000" };
+            if (age === '18-26') return { approved: true, limit: "100.000" }; 
             if (age === '27-35') {
-                if (gender === 'Kadın') return { approved: true, limit: "75.000" };
-                if (gender === 'Erkek') return { approved: true, limit: "100.000" };
+                if (gender === 'Kadın') return { approved: true, limit: "75.000" };  
+                if (gender === 'Erkek') return { approved: true, limit: "100.000" }; 
             }
-            if (age === '36+') return { approved: true, limit: "100.000" };
+            if (age === '36+') return { approved: true, limit: "100.000" };   
         }
 
         if (calisma === 'Hayır' && tapu === 'Hayır') {
-            if (gender === 'Kadın') {
-                return { approved: true, limit: "75.000" };
-            }
-            if (gender === 'Erkek') {
-                return { approved: false, limit: "" };
-            }
+            if (gender === 'Kadın') return { approved: true, limit: "75.000" }; 
+            if (gender === 'Erkek') return { approved: false, limit: "" }; 
         }
 
         return { approved: false, limit: "" };
     }
 
-    // Tarihi formatlama
-    function getFormattedDate() {
-        const now = new Date();
-        const dd = String(now.getDate()).padStart(2, '0');
-        const mm = String(now.getMonth() + 1).padStart(2, '0');
-        const yyyy = now.getFullYear();
-        const hh = String(now.getHours()).padStart(2, '0');
-        const min = String(now.getMinutes()).padStart(2, '0');
-        return `${dd}.${mm}.${yyyy} ${hh}:${min}`;
+    function showAlert(msg) {
+        var alertBox = document.getElementById('hl-alert');
+        alertBox.innerText = msg;
+        alertBox.style.display = 'block';
+        alertBox.style.animation = 'hlSlideDownAlert 0.4s ease forwards';
+        document.getElementById('hl-main-container').classList.add('hl-shake');
+        setTimeout(function() { 
+            alertBox.style.display = 'none'; 
+            document.getElementById('hl-main-container').classList.remove('hl-shake');
+        }, 3000);
     }
 
     function runHedefCode() {
@@ -489,6 +486,19 @@
 
         document.addEventListener('click', function(e) {
             var el = e.target;
+            
+            // Modal kapatma butonu
+            if (el.id === 'hl-close-modal' || el.closest('#hl-close-modal')) {
+                document.getElementById('hl-spam-modal').classList.add('hl-hidden');
+                // modal kapatıldığında butonu eski haline getir
+                var btn = document.getElementById('hl-trigger-calculate');
+                if(btn) {
+                    btn.innerText = "Limitimi Hesapla";
+                    btn.disabled = false;
+                }
+                return false;
+            }
+            
             var optBtn = el.closest('.hl-opt-btn');
             if (optBtn) {
                 e.preventDefault();
@@ -519,136 +529,98 @@
             var name = document.getElementById('hl-input-name').value.trim();
             var surname = document.getElementById('hl-input-surname').value.trim();
             var phone = document.getElementById('hl-input-phone').value.trim();
-            var selectedSube = document.getElementById('hl-input-branch').value;
             var city = document.getElementById('hl-input-city').value;
             var district = document.getElementById('hl-input-district').value.trim();
+            var branch = document.getElementById('hl-input-branch').value;
             
-            if (!tc || tc.length !== 11 || !name || !surname || !phone || !selectedSube || !city || !district || !hlState.hasIcra || !hlState.isWorking || !hlState.hasTapu || !hlState.age || !hlState.gender) {
-                var alertBox = document.getElementById('hl-alert');
-                alertBox.style.display = 'block';
-                alertBox.style.animation = 'hlSlideDownAlert 0.4s ease forwards';
-                document.getElementById('hl-main-container').classList.add('hl-shake');
-                setTimeout(function() { 
-                    alertBox.style.display = 'none'; 
-                    document.getElementById('hl-main-container').classList.remove('hl-shake');
-                }, 3000);
+            if (!tc || tc.length !== 11 || !name || !surname || !phone || !city || !district || !branch || !hlState.hasIcra || !hlState.isWorking || !hlState.hasTapu || !hlState.age || !hlState.gender) {
+                showAlert("Lütfen tüm alanları eksiksiz doldurunuz!");
                 return;
             }
 
             var btn = document.getElementById('hl-trigger-calculate');
             btn.disabled = true;
 
-            // Tam Ekran Yükleme Animasyonunu Göster
-            document.getElementById('hl-loading-overlay').classList.remove('hl-hidden');
+            // YÜKLENİYOR (LOADING) EKRANINI GÖSTER
+            document.getElementById('hl-loading-modal').classList.remove('hl-hidden');
 
+            // 1. ADIM: LocalStorage Kontrolü (Hızlı ve Kişi Bazlı Kontrol)
+            if (checkLocalStorageSpam(phone)) {
+                document.getElementById('hl-loading-modal').classList.add('hl-hidden');
+                document.getElementById('hl-spam-modal').classList.remove('hl-hidden');
+                return;
+            }
+
+            // 2. ADIM: Apps Script Üzerinden Sheets Veri Tabanı (Canlı) Kontrolü
+            try {
+                const checkUrl = SCRIPT_URL + "?phone=" + encodeURIComponent(phone);
+                const checkResponse = await fetch(checkUrl, { method: 'GET' });
+                
+                const textRes = await checkResponse.text();
+                if (textRes) {
+                    const checkData = JSON.parse(textRes);
+                    if (checkData && checkData.exists) {
+                        document.getElementById('hl-loading-modal').classList.add('hl-hidden');
+                        document.getElementById('hl-spam-modal').classList.remove('hl-hidden');
+                        setLocalStorageSpam(phone); // Spam engeline takılanı LocalStorage'a da ekle
+                        return; // Mükerrer kayıt olduğu için gönderimi durdur
+                    }
+                }
+            } catch(e) {
+                console.warn("Spam sunucu kontrolü atlandı veya hata alındı, form kaydına geçiliyor.", e);
+            }
+
+            // Varyasyon Matrisi Çalıştırılıyor
             var decision = getVariationLimit(hlState);
             var approved = decision.approved;
             var amount = decision.limit;
 
-            let branchName = "";
-            if(selectedSube.includes("İnegöl")) branchName = "İnegöl Şubesi";
-            else if(selectedSube.includes("Paşabahçe")) branchName = "Paşabahçe Şubesi";
-            else if(selectedSube.includes("Çekmeköy")) branchName = "Çekmeköy Şubesi";
-            else if(selectedSube.includes("İzmit")) branchName = "İzmit Şubesi";
-            else if(selectedSube.includes("Gölcük")) branchName = "Gölcük Şubesi";
-            else if(selectedSube.includes("Körfez")) branchName = "Körfez Şubesi";
-            else if(selectedSube.includes("Derince")) branchName = "Derince Şubesi";
-            else if(selectedSube.includes("Sultanbeyli")) branchName = "Sultanbeyli Şubesi";
-            else if(selectedSube.includes("Yenidoğan")) branchName = "Yenidoğan Şubesi";
-            else if(selectedSube.includes("Kavacık")) branchName = "Kavacık Şubesi";
-            else if(selectedSube.includes("Çayırova")) branchName = "Çayırova Şubesi";
-            else if(selectedSube.includes("Gebze")) branchName = "Gebze Şubesi";
-
-            let productName = "";
-            if (approved) {
-                productName = "LİMİT ÖĞREN - " + amount + " (" + city + " - " + district + ") - TC: " + tc;
-            } else {
-                productName = "LİMİT ÖĞREN BİLGİ (" + city + " - " + district + ") - TC: " + tc;
-            }
-
-            var isDuplicate = false;
-
+            // 3. ADIM: Veri Kaydetme (Garantili FormData Yöntemi)
             if(SCRIPT_URL) {
-                // SUNUCU KORUMASI: Sadece aktif ayın verilerini çek ve telefon numaralarını tara
-                if (!isDuplicate) {
-                    try {
-                        const response = await fetch(SCRIPT_URL); 
-                        if (response.ok) {
-                            const dashData = await response.json();
-                            if (dashData && dashData.records) {
-                                // Sadece rakamları ayıkla
-                                const cleanInputPhone = phone.replace(/[^\d]/g, '');
-                                
-                                // Tablodaki tüm aktif ay kayıtlarını döngüye al
-                                for (let i = 0; i < dashData.records.length; i++) {
-                                    let rec = dashData.records[i];
-                                    let recPhone = String(rec.contact || "").replace(/[^\d]/g, '');
-                                    
-                                    // Eğer şube eşleşiyorsa ve telefon no aynısıysa mükerrer say
-                                    if (rec.branch === branchName && recPhone === cleanInputPhone && recPhone.length > 5) {
-                                        isDuplicate = true;
-                                        break; // Döngüyü kır, taramayı bitir
-                                    }
-                                }
-                            }
-                        }
-                    } catch (e) {
-                        console.warn("Canlı mükerrer kontrolü atlandı (Google Sheet JSON hatası veya bağlantı problemi):", e);
-                    }
-                }
+                try {
+                    const formData = new FormData();
+                    formData.append('tc', tc);
+                    formData.append('name', name);
+                    formData.append('surname', surname);
+                    formData.append('phone', phone);
+                    formData.append('city', city);
+                    formData.append('district', district);
+                    formData.append('branch', branch);
+                    formData.append('hasIcra', hlState.hasIcra);
+                    formData.append('isWorking', hlState.isWorking);
+                    formData.append('hasTapu', hlState.hasTapu);
+                    formData.append('age', hlState.age);
+                    formData.append('gender', hlState.gender);
+                    formData.append('status', approved ? "KABUL EDİLDİ" : "REDDEDİLDİ");
+                    formData.append('amount', approved ? amount : "");
 
-                // E-TABLOYA YAZ: Mükerrer değilse Sheets'e veriyi POST et
-                if (!isDuplicate) {
-                    try {
-                        const payloadData = {
-                            action: "addCustomersBulk",
-                            data: [
-                                {
-                                    date: getFormattedDate(),
-                                    branch: branchName,
-                                    status: "aranmadı",
-                                    name: (name + " " + surname).toUpperCase(),
-                                    contact: phone,
-                                    customerNo: tc, 
-                                    media: "Web Sitesi Form", // G sütununa yazılacak
-                                    category: "",             // H sütununa yazılacak (Boş)
-                                    product: productName      // I sütununa yazılacak formatlı veri
-                                }
-                            ]
-                        };
-
-                        await fetch(SCRIPT_URL, {
-                            method: 'POST',
-                            mode: 'no-cors',
-                            cache: 'no-cache',
-                            headers: { 'Content-Type': 'text/plain' },
-                            body: JSON.stringify(payloadData)
-                        });
-
-                    } catch (e) {
-                        console.error("Sheets Error:", e);
-                    }
+                    // Fire and forget (cevap beklemiyoruz)
+                    fetch(SCRIPT_URL, {
+                        method: 'POST',
+                        mode: 'no-cors',
+                        body: formData
+                    });
+                    
+                    // Veri gitti, Spam engelleyiciyi tetikle
+                    setLocalStorageSpam(phone);
+                } catch (e) {
+                    console.error("Sheets Error:", e);
                 }
             }
 
-            // SONUÇ EKRANINI GÖSTERME (Animasyon Hissi İçin Gecikme)
+            // Sonucu göstermeden önce kısa bir süre daha beklet (Daha iyi UX animasyonu için)
             setTimeout(function() {
-                // Yükleme ekranını kapat
-                document.getElementById('hl-loading-overlay').classList.add('hl-hidden');
+                document.getElementById('hl-loading-modal').classList.add('hl-hidden');
                 document.getElementById('hl-form-content').classList.add('hl-hidden');
-                
-                if (isDuplicate) {
-                    document.getElementById('hl-duplicate-content').classList.remove('hl-hidden');
-                } else if (approved) {
+                if (approved) {
                     document.getElementById('hl-final-amount').innerText = amount;
                     document.getElementById('hl-success-content').classList.remove('hl-hidden');
                 } else {
                     document.getElementById('hl-error-name').innerText = (name + " " + surname).toUpperCase();
                     document.getElementById('hl-error-content').classList.remove('hl-hidden');
                 }
-                
                 window.scrollTo({ top: 0, behavior: 'smooth' });
-            }, 1500);
+            }, 1200);
         }
     }
 
