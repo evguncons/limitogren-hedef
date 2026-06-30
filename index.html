@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Hedef AVM - Limit Tespit Formu</title>
+    <title>Hedef AVM - Limit Tespit Formu Mağaza</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
     <style>
@@ -136,6 +136,14 @@
             box-shadow: 0 0 0 4px rgba(233, 30, 99, 0.08);
         }
 
+        /* İlçe seçimi kapalıyken (şehir seçilmeden önce) daha şeffaf ve tıklanamaz görünmesi için eklendi */
+        #hedef-limit-form-wrapper select:disabled {
+            background-color: #e5e7eb;
+            color: #9ca3af;
+            cursor: not-allowed;
+            opacity: 0.7;
+        }
+
         #hedef-limit-form-wrapper .hl-opt-btn {
             height: 46px;
             border: 2px solid #e5e7eb;
@@ -234,20 +242,26 @@
 <body>
 
 <div id="hedef-limit-form-wrapper">
+    <!-- DİNAMİK UYARI MESAJI -->
     <div id="hl-alert">Lütfen tüm alanları eksiksiz doldurunuz!</div>
 
     <!-- SPAM (MÜKERRER) KONTROLÜ İÇİN ÖZEL UYARI POPUP'I -->
     <div id="hl-spam-modal" class="fixed inset-0 z-[10005] bg-black bg-opacity-60 flex items-center justify-center hl-hidden hl-fade-in" style="backdrop-filter: blur(2px);">
         <div class="bg-white rounded-3xl p-6 md:p-8 max-w-sm w-[90%] mx-auto shadow-2xl text-center hl-slide-up relative">
-            <div class="w-16 h-16 bg-red-100 text-red-500 rounded-full flex items-center justify-center mx-auto mb-5">
+            <div class="w-16 h-16 bg-amber-100 text-yellow-600 rounded-full flex items-center justify-center mx-auto mb-5">
                 <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" fill="currentColor" viewBox="0 0 16 16">
-                    <path d="M8 15A7 7 0 1 1 8 1a7 7 0 0 1 0 14m0 1A8 8 0 1 0 8 0a8 8 0 0 0 0 16"/>
-                    <path d="M7.002 11a1 1 0 1 1 2 0 1 1 0 0 1-2 0zM7.1 4.995a.905.905 0 1 1 1.8 0l-.35 3.507a.552.552 0 0 1-1.1 0z"/>
+                    <path d="M8.982 1.566a1.13 1.13 0 0 0-1.96 0L.165 13.233c-.457.778.091 1.767.98 1.767h13.713c.889 0 1.438-.99.98-1.767L8.982 1.566zM8 5c.535 0 .954.462.9.995l-.35 3.507a.552.552 0 0 1-1.1 0L7.1 5.995A.905.905 0 0 1 8 5zm.002 6a1 1 0 1 1 0 2 1 1 0 0 1 0-2z"/>
                 </svg>
             </div>
-            <h3 class="text-2xl font-black text-gray-900 mb-2">Uyarı!</h3>
-            <p class="text-gray-600 font-medium mb-6 leading-relaxed">Bu ay için başvurunuz sistemimizde kayıtlıdır.<br>Lütfen daha sonra tekrar deneyiniz.</p>
-            <button type="button" id="hl-close-modal" class="w-full py-3 bg-gray-900 text-white font-bold rounded-xl hover:bg-black transition-colors uppercase tracking-wide">Tamam</button>
+            <h3 class="text-2xl font-black text-gray-900 mb-2">Tekrar Gönderim Sınırı!</h3>
+            <p class="text-gray-600 font-medium mb-1">Bu telefon numarasına ait bir başvuru zaten var.</p>
+            <hr class="my-4 border-gray-200">
+            <div class="text-left bg-yellow-50 rounded-xl p-4 mb-6 border border-yellow-100">
+                <p class="font-bold text-gray-800 text-sm mb-2">SAYIN BAŞVURU SAHİBİ,</p>
+                <p class="text-gray-600 text-sm leading-relaxed mb-3">Girdiğiniz <strong>Telefon Numarası</strong> ile bu şubede ve bu ay içerisinde zaten bir değerlendirme yapılmıştır.</p>
+                <p class="text-gray-700 font-medium text-xs italic">Kayıtların karışmaması ve işlem güvenliği adına mükerrer şekilde tekrar form gönderemezsiniz.</p>
+            </div>
+            <button type="button" id="hl-close-modal" class="w-full py-4 bg-gray-900 text-white font-bold rounded-2xl hover:bg-black transition-colors uppercase tracking-widest text-sm">YENİ SORGU BAŞLAT</button>
         </div>
     </div>
 
@@ -297,6 +311,7 @@
                 <div>
                     <label class="hl-label">Şehir *</label>
                     <select id="hl-input-city">
+                        <!-- Şehir listesi optimize edildi -->
                         <option value="" disabled selected>Şehir Seçiniz</option>
                         <option value="İstanbul Anadolu">İstanbul Anadolu</option>
                         <option value="Kocaeli">Kocaeli</option>
@@ -305,7 +320,10 @@
                 </div>
                 <div>
                     <label class="hl-label">İlçe *</label>
-                    <input type="text" id="hl-input-district" placeholder="Örn: Kadıköy">
+                    <!-- İlçe metin kutusu KALDIRILDI, Dinamik Şehir/İlçe Select Kutusu EKLENDİ -->
+                    <select id="hl-input-district" disabled>
+                        <option value="" disabled selected>Önce Şehir Seçin</option>
+                    </select>
                 </div>
                 <div>
                     <label class="hl-label">Şube Seçiniz *</label>
@@ -414,11 +432,25 @@
 
 <script>
 (function() {
+    // Sizin Script ID'niz
     const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbxiaQvyZG-SdpNxDCk2flmhVEcBDz4aCWoX-OMR3-JAlk2JUTYbe5rIYLw-yGUA14uG/exec"; 
 
     var hlState = { hasIcra: null, isWorking: null, hasTapu: null, age: null, gender: null };
 
-    // --- SPAM KONTROLÜ (LOCAL STORAGE) - KİŞİ BAZLI ---
+    // Şehre göre dinamik ilçeler listesi (Sadece Hizmet Verilen İlçeler)
+    const districtsData = {
+        "İstanbul Anadolu": [
+            "Beykoz", "Çekmeköy", "Sancaktepe", "Sultanbeyli"
+        ],
+        "Kocaeli": [
+            "Çayırova", "Derince", "Gebze", "Gölcük", "İzmit", "Körfez"
+        ],
+        "Bursa": [
+            "İnegöl"
+        ]
+    };
+
+    // --- SPAM KONTROLÜ (LOCAL STORAGE) ---
     function checkLocalStorageSpam(phone) {
         if (localStorage.getItem("hedef_limit_phone_" + phone)) {
             return true;
@@ -480,9 +512,44 @@
         }, 3000);
     }
 
+    // Şehir değiştiğinde ilçeleri yükleyen fonksiyon
+    function handleCityChange() {
+        var citySelect = document.getElementById('hl-input-city');
+        var districtSelect = document.getElementById('hl-input-district');
+        var selectedCity = citySelect.value;
+
+        // İlçe seçiciyi temizle ve disabled yap
+        districtSelect.innerHTML = '<option value="" disabled selected>İlçe Seçiniz</option>';
+        
+        if (selectedCity && districtsData[selectedCity]) {
+            // İlgili şehrin ilçelerini ekle
+            var districts = districtsData[selectedCity];
+            // Alfabetik sırala
+            districts.sort((a, b) => a.localeCompare(b, 'tr')); 
+            
+            for (var i = 0; i < districts.length; i++) {
+                var option = document.createElement("option");
+                option.value = districts[i];
+                option.text = districts[i];
+                districtSelect.appendChild(option);
+            }
+            // Aktif hale getir
+            districtSelect.disabled = false;
+        } else {
+            districtSelect.innerHTML = '<option value="" disabled selected>Önce Şehir Seçin</option>';
+            districtSelect.disabled = true;
+        }
+    }
+
     function runHedefCode() {
         var wrapper = document.getElementById('hedef-limit-form-wrapper');
         if (!wrapper) return;
+
+        // Şehir seçimi değişim olayı dinleyicisi eklendi
+        var citySelectElem = document.getElementById('hl-input-city');
+        if(citySelectElem) {
+            citySelectElem.addEventListener('change', handleCityChange);
+        }
 
         document.addEventListener('click', function(e) {
             var el = e.target;
@@ -490,12 +557,7 @@
             // Modal kapatma butonu
             if (el.id === 'hl-close-modal' || el.closest('#hl-close-modal')) {
                 document.getElementById('hl-spam-modal').classList.add('hl-hidden');
-                // modal kapatıldığında butonu eski haline getir
-                var btn = document.getElementById('hl-trigger-calculate');
-                if(btn) {
-                    btn.innerText = "Limitimi Hesapla";
-                    btn.disabled = false;
-                }
+                window.location.reload();
                 return false;
             }
             
@@ -530,7 +592,8 @@
             var surname = document.getElementById('hl-input-surname').value.trim();
             var phone = document.getElementById('hl-input-phone').value.trim();
             var city = document.getElementById('hl-input-city').value;
-            var district = document.getElementById('hl-input-district').value.trim();
+            // District (İlçe) artık bir text değil, select (dropdown)
+            var district = document.getElementById('hl-input-district').value;
             var branch = document.getElementById('hl-input-branch').value;
             
             if (!tc || tc.length !== 11 || !name || !surname || !phone || !city || !district || !branch || !hlState.hasIcra || !hlState.isWorking || !hlState.hasTapu || !hlState.age || !hlState.gender) {
