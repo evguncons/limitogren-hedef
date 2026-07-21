@@ -136,7 +136,6 @@
             box-shadow: 0 0 0 4px rgba(233, 30, 99, 0.08);
         }
 
-        /* İlçe seçimi kapalıyken (şehir seçilmeden önce) daha şeffaf ve tıklanamaz görünmesi için eklendi */
         #hedef-limit-form-wrapper select:disabled {
             background-color: #e5e7eb;
             color: #9ca3af;
@@ -198,21 +197,6 @@
             color: #64748b !important;
         }
 
-        #hedef-limit-form-wrapper .hl-limit-box {
-            background: var(--hl-primary-light);
-            border: 3px dashed var(--hl-primary);
-            padding: 25px 20px;
-            border-radius: 20px;
-            margin: 20px 0;
-        }
-
-        #hedef-limit-form-wrapper .hl-limit-amount {
-            font-size: 56px;
-            font-weight: 900;
-            color: #111827;
-            letter-spacing: -2px;
-        }
-
         #hl-alert {
             position: fixed;
             top: 20px;
@@ -235,33 +219,106 @@
         @media (max-width: 640px) {
             #hedef-limit-form-wrapper .hl-container { padding: 20px 15px; }
             #hedef-limit-form-wrapper .hl-header h2 { font-size: 22px; }
-            #hedef-limit-form-wrapper .hl-limit-amount { font-size: 46px; }
+        }
+
+        /* --- YENİ PREMIUM ONAY EKRANI STİLLERİ --- */
+        #hl-success-content {
+            max-width: 500px;
+            margin: 0 auto;
+        }
+
+        .premium-limit-card {
+            background: linear-gradient(135deg, #c2185b 0%, #880e4f 100%);
+            border-radius: 20px;
+            padding: 30px 20px;
+            color: white;
+            box-shadow: 0 15px 35px rgba(194, 24, 91, 0.3);
+            margin-bottom: 20px;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .premium-limit-card::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: radial-gradient(circle, rgba(255,255,255,0.1) 0%, transparent 60%);
+            transform: rotate(30deg);
+            pointer-events: none;
+        }
+
+        .countdown-box {
+            background-color: #fff8f1;
+            border: 1px solid #fce3ce;
+            border-radius: 12px;
+            padding: 15px;
+            margin-bottom: 20px;
+        }
+
+        .address-box {
+            background-color: #f8fafc;
+            border: 1px solid #e2e8f0;
+            border-radius: 12px;
+            padding: 18px;
+            margin-bottom: 20px;
+        }
+
+        .btn-orange {
+            background: linear-gradient(135deg, #f97316, #ea580c);
+            color: white;
+            box-shadow: 0 8px 20px rgba(249, 115, 22, 0.25);
+        }
+        .btn-orange:hover {
+            background: linear-gradient(135deg, #ea580c, #c2410c);
+            transform: translateY(-2px);
+        }
+
+        .btn-green {
+            background: linear-gradient(135deg, #22c55e, #16a34a);
+            color: white;
+            box-shadow: 0 8px 20px rgba(34, 197, 94, 0.25);
+        }
+        .btn-green:hover {
+            background: linear-gradient(135deg, #16a34a, #15803d);
+            transform: translateY(-2px);
+        }
+
+        .action-button {
+            width: 100%;
+            padding: 16px;
+            border-radius: 14px;
+            font-size: 16px;
+            font-weight: 800;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+            transition: all 0.3s ease;
+            margin-bottom: 12px;
+            text-decoration: none;
         }
     </style>
 </head>
 <body>
 
 <div id="hedef-limit-form-wrapper">
-    <!-- DİNAMİK UYARI MESAJI -->
     <div id="hl-alert">Lütfen tüm alanları eksiksiz doldurunuz!</div>
 
     <!-- SPAM (MÜKERRER) KONTROLÜ İÇİN ÖZEL UYARI POPUP'I -->
     <div id="hl-spam-modal" class="fixed inset-0 z-[10005] bg-black bg-opacity-60 flex items-center justify-center hl-hidden hl-fade-in" style="backdrop-filter: blur(2px);">
         <div class="bg-white rounded-3xl p-6 md:p-8 max-w-sm w-[90%] mx-auto shadow-2xl text-center hl-slide-up relative">
-            <div class="w-16 h-16 bg-amber-100 text-yellow-600 rounded-full flex items-center justify-center mx-auto mb-5">
+            <div class="w-16 h-16 bg-red-100 text-red-500 rounded-full flex items-center justify-center mx-auto mb-5">
                 <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" fill="currentColor" viewBox="0 0 16 16">
-                    <path d="M8.982 1.566a1.13 1.13 0 0 0-1.96 0L.165 13.233c-.457.778.091 1.767.98 1.767h13.713c.889 0 1.438-.99.98-1.767L8.982 1.566zM8 5c.535 0 .954.462.9.995l-.35 3.507a.552.552 0 0 1-1.1 0L7.1 5.995A.905.905 0 0 1 8 5zm.002 6a1 1 0 1 1 0 2 1 1 0 0 1 0-2z"/>
+                    <path d="M8 15A7 7 0 1 1 8 1a7 7 0 0 1 0 14m0 1A8 8 0 1 0 8 0a8 8 0 0 0 0 16"/>
+                    <path d="M7.002 11a1 1 0 1 1 2 0 1 1 0 0 1-2 0zM7.1 4.995a.905.905 0 1 1 1.8 0l-.35 3.507a.552.552 0 0 1-1.1 0z"/>
                 </svg>
             </div>
-            <h3 class="text-2xl font-black text-gray-900 mb-2">Tekrar Gönderim Sınırı!</h3>
-            <p class="text-gray-600 font-medium mb-1">Bu telefon numarasına ait bir başvuru zaten var.</p>
-            <hr class="my-4 border-gray-200">
-            <div class="text-left bg-yellow-50 rounded-xl p-4 mb-6 border border-yellow-100">
-                <p class="font-bold text-gray-800 text-sm mb-2">SAYIN BAŞVURU SAHİBİ,</p>
-                <p class="text-gray-600 text-sm leading-relaxed mb-3">Girdiğiniz <strong>Telefon Numarası</strong> ile bu şubede ve bu ay içerisinde zaten bir değerlendirme yapılmıştır.</p>
-                <p class="text-gray-700 font-medium text-xs italic">Kayıtların karışmaması ve işlem güvenliği adına mükerrer şekilde tekrar form gönderemezsiniz.</p>
-            </div>
-            <button type="button" id="hl-close-modal" class="w-full py-4 bg-gray-900 text-white font-bold rounded-2xl hover:bg-black transition-colors uppercase tracking-widest text-sm">YENİ SORGU BAŞLAT</button>
+            <h3 class="text-2xl font-black text-gray-900 mb-2">Uyarı!</h3>
+            <p class="text-gray-600 font-medium mb-6 leading-relaxed">Sistemimizde bu telefon numarasına ait bir başvuru zaten bulunmaktadır.<br>Lütfen daha sonra tekrar deneyiniz.</p>
+            <button type="button" id="hl-close-modal" class="w-full py-3 bg-gray-900 text-white font-bold rounded-xl hover:bg-black transition-colors uppercase tracking-wide">Tamam</button>
         </div>
     </div>
 
@@ -286,7 +343,6 @@
                 <p class="text-[13px] text-gray-500 font-medium">Saniyeler içinde taksit limitinizi belirleyelim.</p>
             </div>
 
-            <!-- Kişisel Bilgiler Grid -->
             <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mb-4">
                 <div>
                     <label class="hl-label">TC Kimlik No *</label>
@@ -294,24 +350,22 @@
                 </div>
                 <div>
                     <label class="hl-label">Adınız *</label>
-                    <input type="text" id="hl-input-name" placeholder="Adınız">
+                    <input type="text" id="hl-input-name" placeholder="Adınız" style="text-transform: capitalize;">
                 </div>
                 <div>
                     <label class="hl-label">Soyadınız *</label>
-                    <input type="text" id="hl-input-surname" placeholder="Soyadınız">
+                    <input type="text" id="hl-input-surname" placeholder="Soyadınız" style="text-transform: capitalize;">
                 </div>
             </div>
 
-            <!-- İletişim Bilgileri Grid -->
             <div class="grid grid-cols-1 md:grid-cols-4 gap-3 mb-5">
                 <div>
                     <label class="hl-label">Telefon No *</label>
-                    <input type="tel" id="hl-input-phone" placeholder="05XX XXX XX XX">
+                    <input type="tel" id="hl-input-phone" placeholder="05XX XXX XX XX" maxlength="11" oninput="this.value = this.value.replace(/[^0-9]/g, '')">
                 </div>
                 <div>
                     <label class="hl-label">Şehir *</label>
                     <select id="hl-input-city">
-                        <!-- Şehir listesi optimize edildi -->
                         <option value="" disabled selected>Şehir Seçiniz</option>
                         <option value="İstanbul Anadolu">İstanbul Anadolu</option>
                         <option value="Kocaeli">Kocaeli</option>
@@ -321,7 +375,6 @@
                 </div>
                 <div>
                     <label class="hl-label">İlçe *</label>
-                    <!-- İlçe metin kutusu KALDIRILDI, Dinamik Şehir/İlçe Select Kutusu EKLENDİ -->
                     <select id="hl-input-district" disabled>
                         <option value="" disabled selected>Önce Şehir Seçin</option>
                     </select>
@@ -347,7 +400,6 @@
                 </div>
             </div>
 
-            <!-- Sorular -->
             <div class="grid grid-cols-1 md:grid-cols-2 gap-5">
                 <div>
                     <p class="hl-question">Aktif icra dava dosyanız var mı? *</p>
@@ -394,23 +446,74 @@
             <button type="button" id="hl-trigger-calculate" class="hl-submit-btn">Limitimi Hesapla</button>
         </div>
 
-        <!-- ONAY EKRANI -->
+        <!-- ONAY EKRANI (PREMIUM TASARIM) -->
         <div id="hl-success-content" class="hl-result-screen hl-fade-in hl-hidden text-center">
-            <div class="w-20 h-20 bg-green-100 text-green-600 rounded-full flex items-center justify-center mx-auto mb-6">
-                <svg xmlns="http://www.w3.org/2000/svg" width="40" height="40" fill="currentColor" viewBox="0 0 16 16">
+            <div class="w-16 h-16 bg-green-500 text-white rounded-full flex items-center justify-center mx-auto mb-4 shadow-lg">
+                <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" fill="currentColor" viewBox="0 0 16 16">
                     <path d="M13.854 3.646a.5.5 0 0 1 0 .708l-7 7a.5.5 0 0 1-.708 0l-3.5-3.5a.5.5 0 1 1 .708-.708L6.5 10.293l6.646-6.647a.5.5 0 0 1 .708 0z"/>
                 </svg>
             </div>
-            <h2 class="text-3xl font-black mb-2 text-pink-600">Tebrikler!</h2>
-            <p class="text-gray-600 font-bold text-lg mb-6">Limitiniz başarıyla tanımlandı.</p>
-            <div class="hl-limit-box">
-                <span class="text-xs font-black text-gray-500 uppercase block mb-1">ONAYLANAN ÖN LİMİTİNİZ</span>
-                <div class="hl-limit-amount">₺<span id="hl-final-amount">0</span></div>
+            
+            <!-- Dinamik İsim Başlığı -->
+            <h2 class="text-3xl font-black mb-2 text-gray-800">Tebrikler <span id="hl-success-name" class="text-orange-500">İsim</span>!</h2>
+            <p class="text-gray-500 font-medium text-sm mb-6">Değerlendirmeniz tamamlandı. İşte size özel alışveriş limitiniz:</p>
+
+            <!-- Premium Magenta Limit Kartı -->
+            <div class="premium-limit-card text-left">
+                <div class="flex items-center gap-2 mb-1 opacity-90">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" viewBox="0 0 16 16">
+                        <path d="M10.97 4.97a.75.75 0 0 1 1.07 1.05l-3.99 4.99a.75.75 0 0 1-1.08.02L4.324 8.384a.75.75 0 1 1 1.06-1.06l2.094 2.093 3.473-4.425a.267.267 0 0 1 .02-.022z"/>
+                    </svg>
+                    <span class="text-xs font-bold tracking-wider uppercase">Onaylanan Alışveriş Limiti</span>
+                </div>
+                <div class="text-[56px] font-black leading-none mb-2 tracking-tight">
+                    <span id="hl-final-amount">0</span><span class="text-3xl ml-1">₺</span>
+                </div>
+                <p class="text-[11px] opacity-75 font-medium">* Verdiğiniz bilgiler doğrultusunda belirlenmiştir.</p>
             </div>
-            <div class="bg-blue-50 p-6 rounded-2xl text-left mb-8 border-l-8 border-pink-400 shadow-sm">
-                <p class="text-base text-gray-800 leading-relaxed">🚀 <strong>Şimdi Alışveriş Zamanı!</strong><br>Bu limit ile Türkiye genelindeki tüm <strong>Hedef AVM</strong> mağazalarımızdan, elden taksit avantajıyla alışverişe hemen başlayabilirsiniz.</p>
+
+            <!-- Geri Sayım Sayacı -->
+            <div class="countdown-box flex items-center justify-center gap-2">
+                <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" class="text-orange-500" fill="currentColor" viewBox="0 0 16 16">
+                    <path d="M8 3.5a.5.5 0 0 0-1 0V9a.5.5 0 0 0 .252.434l3.5 2a.5.5 0 0 0 .496-.868L8 8.71V3.5z"/>
+                    <path d="M8 16A8 8 0 1 0 8 0a8 8 0 0 0 0 16zm7-8A7 7 0 1 1 1 8a7 7 0 0 1 14 0z"/>
+                </svg>
+                <span class="text-orange-500 font-bold text-sm">Bu limit <span id="hl-countdown" class="text-lg mx-1">23:59:59</span> boyunca geçerli</span>
             </div>
-            <button type="button" class="hl-reload-btn w-full py-4 bg-gray-900 text-white font-black rounded-2xl uppercase tracking-widest hover:bg-black transition-all">Yeni Sorgu Başlat</button>
+
+            <!-- Adres Bilgi Kutusu -->
+            <div class="address-box text-left">
+                <div class="flex items-start gap-2">
+                    <div class="mt-1">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" class="text-pink-600" fill="currentColor" viewBox="0 0 16 16">
+                            <path d="M8 16s6-5.686 6-10A6 6 0 0 0 2 6c0 4.314 6 10 6 10zm0-7a3 3 0 1 1 0-6 3 3 0 0 1 0 6z"/>
+                        </svg>
+                    </div>
+                    <div>
+                        <p class="text-gray-800 font-bold text-[15px] mb-2 leading-snug">Limitinizi <span id="hl-success-branch-name" class="text-orange-500">Şube</span> mağazamızda hemen kullanabilirsiniz.</p>
+                        <p class="text-[11px] font-bold text-gray-400 tracking-wider uppercase mb-1">Mağaza Açık Adresi</p>
+                        <p id="hl-success-branch-address" class="text-gray-600 text-sm font-medium">Adres bilgisi yükleniyor...</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Aksiyon Butonları -->
+            <a href="#" id="hl-btn-nav" target="_blank" class="action-button btn-orange">
+                <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="currentColor" viewBox="0 0 16 16">
+                    <path d="M8 16s6-5.686 6-10A6 6 0 0 0 2 6c0 4.314 6 10 6 10zm0-7a3 3 0 1 1 0-6 3 3 0 0 1 0 6z"/>
+                    <circle cx="8" cy="6" r="1.5" fill="white"/>
+                </svg>
+                Konum Al (Yol Tarifi)
+            </a>
+            
+            <a href="#" id="hl-btn-whatsapp" target="_blank" class="action-button btn-green">
+                <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" fill="currentColor" viewBox="0 0 16 16">
+                    <path d="M13.601 2.326A7.85 7.85 0 0 0 7.994 0C3.627 0 .068 3.558.064 7.926c0 1.399.366 2.76 1.057 3.965L0 16l4.204-1.102a7.9 7.9 0 0 0 3.79.965h.004c4.368 0 7.926-3.558 7.93-7.93A7.9 7.9 0 0 0 13.6 2.326zM7.994 14.521a6.6 6.6 0 0 1-3.356-.92l-.24-.144-2.494.654.666-2.433-.156-.251a6.56 6.56 0 0 1-1.007-3.505c0-3.626 2.957-6.584 6.591-6.584a6.56 6.56 0 0 1 4.66 1.931 6.56 6.56 0 0 1 1.928 4.66c-.004 3.639-2.961 6.592-6.592 6.592m3.615-4.934c-.197-.099-1.17-.578-1.353-.646-.182-.065-.315-.099-.445.099-.133.197-.513.646-.627.775-.114.133-.232.148-.43.05-.197-.1-.836-.308-1.592-.985-.59-.525-.985-1.175-1.103-1.372-.114-.198-.011-.304.088-.403.087-.088.197-.232.296-.346.1-.114.133-.198.198-.33.065-.134.034-.248-.015-.347-.05-.099-.445-1.076-.612-1.47-.16-.389-.323-.335-.445-.34-.114-.007-.247-.007-.38-.007a.73.73 0 0 0-.529.247c-.182.198-.691.677-.691 1.654s.71 1.916.81 2.049c.098.133 1.394 2.132 3.383 2.992.47.205.84.326 1.129.418.475.152.904.129 1.246.08.38-.058 1.171-.48 1.338-.943.164-.464.164-.86.114-.943-.049-.084-.182-.133-.38-.232z"/>
+                </svg>
+                WhatsApp'tan Paylaş
+            </a>
+
+            <button type="button" class="hl-reload-btn text-gray-400 font-bold text-sm mt-4 hover:text-gray-600 transition-colors uppercase tracking-widest">YENİ SORGU BAŞLAT</button>
         </div>
 
         <!-- RED EKRANI (Mağazaya Davet) -->
@@ -434,28 +537,90 @@
 
 <script>
 (function() {
-    // Sizin Script ID'niz
+    // YENİ DAĞITIM URL'SİNİ BURAYA YAPIŞTIRIN
     const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbxiaQvyZG-SdpNxDCk2flmhVEcBDz4aCWoX-OMR3-JAlk2JUTYbe5rIYLw-yGUA14uG/exec"; 
 
     var hlState = { hasIcra: null, isWorking: null, hasTapu: null, age: null, gender: null };
+    var countdownInterval = null;
 
-    // Şehre göre dinamik ilçeler listesi (Sadece Hizmet Verilen İlçeler)
+    // ŞEHİRLERE GÖRE DİNAMİK İLÇE VERİLERİ (Eksik olan veri eklendi)
     const districtsData = {
-        "İstanbul Anadolu": [
-            "Beykoz", "Çekmeköy", "Sancaktepe", "Sultanbeyli"
-        ],
-        "Kocaeli": [
-            "Çayırova", "Derince", "Gebze", "Gölcük", "İzmit", "Körfez"
-        ],
-        "Bursa": [
-            "İnegöl"
-        ],
-        "Düzce": [
-            "Burhaniye"
-        ]
+        "İstanbul Anadolu": ["Sancaktepe", "Beykoz", "Sultanbeyli", "Çekmeköy"],
+        "Kocaeli": ["Çayırova", "Gebze", "Derince", "İzmit", "Körfez", "Gölcük"],
+        "Bursa": ["İnegöl"],
+        "Düzce": ["Burhaniye"]
     };
 
-    // --- SPAM KONTROLÜ (LOCAL STORAGE) ---
+    // Şube Adres ve Harita Linkleri Konfigürasyonu
+    const branchInfo = {
+        "İnegöl Şubesi": {
+            shortName: "İnegöl",
+            address: "Kemalpaşa Mah. Atatürk Blv. no:58, İnegöl/Bursa",
+            mapUrl: "https://maps.app.goo.gl/tW5kEBSB2LFRwFSt5" 
+        },
+        "Paşabahçe Şubesi": {
+            shortName: "Paşabahçe",
+            address: "Barbaros Caddesi No:9/A Paşabahçe Beykoz/İstanbul",
+            mapUrl: "https://maps.app.goo.gl/x8tq3YmSREzZ3bYHA" 
+        },
+        "Çekmeköy Şubesi": {
+            shortName: "Çekmeköy",
+            address: "Çamlık Mahallesi Şahin Bey Caddesi No:34 Çekmeköy/İstanbul",
+            mapUrl: "https://maps.app.goo.gl/8E1qM2k21yK8U7Bv6" 
+        },
+        "İzmit Şubesi": {
+            shortName: "İzmit",
+            address: "Mehmet Ali Paşa Mahallesi, Zincirlikuyu Cd No:65 İzmit/Kocaeli",
+            mapUrl: "https://maps.app.goo.gl/R3B5J27rU2eW34NVA" 
+        },
+        "Gölcük Şubesi": {
+            shortName: "Gölcük",
+            address: "Merkez, Amiral Sağlam Cd. No:17 Gölcük/Kocaeli",
+            mapUrl: "https://maps.app.goo.gl/95aT5S4zW1gZ8E2f7" 
+        },
+        "Körfez Şubesi": {
+            shortName: "Körfez",
+            address: "Kuzey Mahallesi, Ağadere Caddesi No:12 Körfez(Tütünçiftlik)/Kocaeli",
+            mapUrl: "https://maps.app.goo.gl/Z8tQ29g1F6W2Y6kH7" 
+        },
+        "Derince Şubesi": {
+            shortName: "Derince",
+            address: "Çenedağ Mahallesi, Denizciler Caddesi No: 42/A/B/C Derince/Kocaeli",
+            mapUrl: "https://maps.app.goo.gl/4t6N7M8d2E4e3rR67" 
+        },
+        "Sultanbeyli Şubesi": {
+            shortName: "Sultanbeyli",
+            address: "Abdurrahmangazi Mahallesi, Fatih Caddesi No:112 Sultanbeyli/İstanbul",
+            mapUrl: "https://maps.app.goo.gl/T4Y2G82D8y9q1L1j6" 
+        },
+        "Yenidoğan Şubesi": {
+            shortName: "Yenidoğan",
+            address: "Bahçelievler Caddesi No:46 Yenidoğan Sancaktepe/İstanbul",
+            mapUrl: "https://maps.app.goo.gl/7Q2B9s2e2e9t4G9s6" 
+        },
+        "Kavacık Şubesi": {
+            shortName: "Kavacık",
+            address: "Kavacık Mahallesi Fatih Sultan Mehmet Caddesi No:15 Beykoz/İstanbul",
+            mapUrl: "https://maps.app.goo.gl/2Y9f8t6A8d1B2hK18" 
+        },
+        "Çayırova Şubesi": {
+            shortName: "Çayırova",
+            address: "Yeni Mahallesi, Fatih Caddesi, No:25, Çayırova/Kocaeli",
+            mapUrl: "https://maps.app.goo.gl/6W4h8L9f2k3s4A5g6" 
+        },
+        "Gebze Şubesi": {
+            shortName: "Gebze",
+            address: "Hacıhalil, Yeni Bağdat Cd. No:386, Gebze/Kocaeli",
+            mapUrl: "https://maps.app.goo.gl/1S8H9g2L9r3F9yM58" 
+        },
+        "Düzce Şubesi": {
+            shortName: "Düzce",
+            address: "DÜZCE MERKEZ, Burhaniye, Atatürk Blv. 34B, 81010 BURHANİYE/Düzce",
+            mapUrl: "https://share.google/nYgEw6zaCA0o7EVnJ" 
+        }
+    };
+
+    // --- SPAM KONTROLÜ (LOCAL STORAGE) - KİŞİ BAZLI ---
     function checkLocalStorageSpam(phone) {
         if (localStorage.getItem("hedef_limit_phone_" + phone)) {
             return true;
@@ -465,6 +630,31 @@
 
     function setLocalStorageSpam(phone) {
         localStorage.setItem("hedef_limit_phone_" + phone, "true");
+    }
+
+    // Şehir değiştiğinde ilçeleri yükleyen fonksiyon
+    function handleCityChange() {
+        var citySelect = document.getElementById('hl-input-city');
+        var districtSelect = document.getElementById('hl-input-district');
+        var selectedCity = citySelect.value;
+
+        districtSelect.innerHTML = '<option value="" disabled selected>İlçe Seçiniz</option>';
+        
+        if (selectedCity && districtsData[selectedCity]) {
+            var districts = districtsData[selectedCity];
+            districts.sort((a, b) => a.localeCompare(b, 'tr')); 
+            
+            for (var i = 0; i < districts.length; i++) {
+                var option = document.createElement("option");
+                option.value = districts[i];
+                option.text = districts[i];
+                districtSelect.appendChild(option);
+            }
+            districtSelect.disabled = false;
+        } else {
+            districtSelect.innerHTML = '<option value="" disabled selected>Önce Şehir Seçin</option>';
+            districtSelect.disabled = true;
+        }
     }
 
     // --- VARYASYON (LİMİT) MATRİSİ ---
@@ -505,6 +695,43 @@
         return { approved: false, limit: "" };
     }
 
+    // İsim Baş Harfi Büyütme Yardımcısı
+    function capitalizeFirstLetter(string) {
+        return string.charAt(0).toUpperCase() + string.slice(1).toLowerCase();
+    }
+
+    // 24 Saatlik Geri Sayım Fonksiyonu
+    function startCountdown() {
+        if (countdownInterval) clearInterval(countdownInterval);
+        
+        // 24 saat = 24 * 60 * 60 = 86400 saniye
+        let timeRemaining = 86400; 
+        const countdownElement = document.getElementById('hl-countdown');
+
+        function updateDisplay() {
+            let hours = Math.floor(timeRemaining / 3600);
+            let minutes = Math.floor((timeRemaining % 3600) / 60);
+            let seconds = timeRemaining % 60;
+
+            // Formatlama (örn: 09:05:02)
+            hours = hours < 10 ? "0" + hours : hours;
+            minutes = minutes < 10 ? "0" + minutes : minutes;
+            seconds = seconds < 10 ? "0" + seconds : seconds;
+
+            countdownElement.innerText = hours + ":" + minutes + ":" + seconds;
+
+            if (timeRemaining > 0) {
+                timeRemaining--;
+            } else {
+                clearInterval(countdownInterval);
+                countdownElement.innerText = "SÜRE DOLDU";
+            }
+        }
+
+        updateDisplay(); // İlk çağrı anında gösterim için
+        countdownInterval = setInterval(updateDisplay, 1000);
+    }
+
     function showAlert(msg) {
         var alertBox = document.getElementById('hl-alert');
         alertBox.innerText = msg;
@@ -517,40 +744,10 @@
         }, 3000);
     }
 
-    // Şehir değiştiğinde ilçeleri yükleyen fonksiyon
-    function handleCityChange() {
-        var citySelect = document.getElementById('hl-input-city');
-        var districtSelect = document.getElementById('hl-input-district');
-        var selectedCity = citySelect.value;
-
-        // İlçe seçiciyi temizle ve disabled yap
-        districtSelect.innerHTML = '<option value="" disabled selected>İlçe Seçiniz</option>';
-        
-        if (selectedCity && districtsData[selectedCity]) {
-            // İlgili şehrin ilçelerini ekle
-            var districts = districtsData[selectedCity];
-            // Alfabetik sırala
-            districts.sort((a, b) => a.localeCompare(b, 'tr')); 
-            
-            for (var i = 0; i < districts.length; i++) {
-                var option = document.createElement("option");
-                option.value = districts[i];
-                option.text = districts[i];
-                districtSelect.appendChild(option);
-            }
-            // Aktif hale getir
-            districtSelect.disabled = false;
-        } else {
-            districtSelect.innerHTML = '<option value="" disabled selected>Önce Şehir Seçin</option>';
-            districtSelect.disabled = true;
-        }
-    }
-
     function runHedefCode() {
         var wrapper = document.getElementById('hedef-limit-form-wrapper');
         if (!wrapper) return;
 
-        // Şehir seçimi değişim olayı dinleyicisi eklendi
         var citySelectElem = document.getElementById('hl-input-city');
         if(citySelectElem) {
             citySelectElem.addEventListener('change', handleCityChange);
@@ -559,10 +756,12 @@
         document.addEventListener('click', function(e) {
             var el = e.target;
             
-            // Modal kapatma butonu
             if (el.id === 'hl-close-modal' || el.closest('#hl-close-modal')) {
                 document.getElementById('hl-spam-modal').classList.add('hl-hidden');
-                window.location.reload();
+                var btn = document.getElementById('hl-trigger-calculate');
+                if(btn) {
+                    btn.disabled = false;
+                }
                 return false;
             }
             
@@ -597,7 +796,6 @@
             var surname = document.getElementById('hl-input-surname').value.trim();
             var phone = document.getElementById('hl-input-phone').value.trim();
             var city = document.getElementById('hl-input-city').value;
-            // District (İlçe) artık bir text değil, select (dropdown)
             var district = document.getElementById('hl-input-district').value;
             var branch = document.getElementById('hl-input-branch').value;
             
@@ -609,17 +807,14 @@
             var btn = document.getElementById('hl-trigger-calculate');
             btn.disabled = true;
 
-            // YÜKLENİYOR (LOADING) EKRANINI GÖSTER
             document.getElementById('hl-loading-modal').classList.remove('hl-hidden');
 
-            // 1. ADIM: LocalStorage Kontrolü (Hızlı ve Kişi Bazlı Kontrol)
             if (checkLocalStorageSpam(phone)) {
                 document.getElementById('hl-loading-modal').classList.add('hl-hidden');
                 document.getElementById('hl-spam-modal').classList.remove('hl-hidden');
                 return;
             }
 
-            // 2. ADIM: Apps Script Üzerinden Sheets Veri Tabanı (Canlı) Kontrolü
             try {
                 const checkUrl = SCRIPT_URL + "?phone=" + encodeURIComponent(phone);
                 const checkResponse = await fetch(checkUrl, { method: 'GET' });
@@ -630,20 +825,18 @@
                     if (checkData && checkData.exists) {
                         document.getElementById('hl-loading-modal').classList.add('hl-hidden');
                         document.getElementById('hl-spam-modal').classList.remove('hl-hidden');
-                        setLocalStorageSpam(phone); // Spam engeline takılanı LocalStorage'a da ekle
-                        return; // Mükerrer kayıt olduğu için gönderimi durdur
+                        setLocalStorageSpam(phone);
+                        return; 
                     }
                 }
             } catch(e) {
                 console.warn("Spam sunucu kontrolü atlandı veya hata alındı, form kaydına geçiliyor.", e);
             }
 
-            // Varyasyon Matrisi Çalıştırılıyor
             var decision = getVariationLimit(hlState);
             var approved = decision.approved;
             var amount = decision.limit;
 
-            // 3. ADIM: Veri Kaydetme (Garantili FormData Yöntemi)
             if(SCRIPT_URL) {
                 try {
                     const formData = new FormData();
@@ -662,7 +855,6 @@
                     formData.append('status', approved ? "KABUL EDİLDİ" : "REDDEDİLDİ");
                     formData.append('amount', approved ? amount : "");
 
-                    // Fire and forget (cevap beklemiyoruz)
                     fetch(SCRIPT_URL, {
                         method: 'POST',
                         mode: 'no-cors',
@@ -681,7 +873,35 @@
                 document.getElementById('hl-loading-modal').classList.add('hl-hidden');
                 document.getElementById('hl-form-content').classList.add('hl-hidden');
                 if (approved) {
+                    // Dinamik verileri yerleştir
+                    const formattedName = capitalizeFirstLetter(name);
+                    document.getElementById('hl-success-name').innerText = formattedName;
                     document.getElementById('hl-final-amount').innerText = amount;
+                    
+                    // Şube bilgilerini yerleştir
+                    let bInfo = branchInfo[branch];
+                    let bShortName = branch;
+                    let bAddress = "Detaylı adres için müşteri hizmetlerimizle iletişime geçebilirsiniz.";
+                    let bMapUrl = "#";
+
+                    if (bInfo) {
+                        bShortName = bInfo.shortName;
+                        bAddress = bInfo.address;
+                        bMapUrl = bInfo.mapUrl;
+                    }
+
+                    document.getElementById('hl-success-branch-name').innerText = bShortName;
+                    document.getElementById('hl-success-branch-address').innerText = bAddress;
+                    document.getElementById('hl-btn-nav').href = bMapUrl;
+
+                    // WhatsApp Paylaşım Linki Oluşturma
+                    const whatsappMessage = `Merhaba, Hedef AVM'den ${amount} ₺ ön onaylı alışveriş limiti kazandım! 🎉\n\nAdım: ${formattedName} ${capitalizeFirstLetter(surname)}\nGeçerli Mağaza: ${branch}\nAdres: ${bAddress}`;
+                    const whatsappUrl = `https://wa.me/?text=${encodeURIComponent(whatsappMessage)}`;
+                    document.getElementById('hl-btn-whatsapp').href = whatsappUrl;
+
+                    // Geri sayımı başlat
+                    startCountdown();
+
                     document.getElementById('hl-success-content').classList.remove('hl-hidden');
                 } else {
                     document.getElementById('hl-error-name').innerText = (name + " " + surname).toUpperCase();
