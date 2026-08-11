@@ -454,11 +454,9 @@
                 </svg>
             </div>
             
-            <!-- Dinamik İsim Başlığı -->
             <h2 class="text-3xl font-black mb-2 text-gray-800">Tebrikler <span id="hl-success-name" class="text-orange-500">İsim</span>!</h2>
             <p class="text-gray-500 font-medium text-sm mb-6">Değerlendirmeniz tamamlandı. İşte size özel alışveriş limitiniz:</p>
 
-            <!-- Premium Magenta Limit Kartı -->
             <div class="premium-limit-card text-left">
                 <div class="flex items-center gap-2 mb-1 opacity-90">
                     <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" viewBox="0 0 16 16">
@@ -472,7 +470,6 @@
                 <p class="text-[11px] opacity-75 font-medium">* Verdiğiniz bilgiler doğrultusunda belirlenmiştir.</p>
             </div>
 
-            <!-- Geri Sayım Sayacı -->
             <div class="countdown-box flex items-center justify-center gap-2">
                 <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" class="text-orange-500" fill="currentColor" viewBox="0 0 16 16">
                     <path d="M8 3.5a.5.5 0 0 0-1 0V9a.5.5 0 0 0 .252.434l3.5 2a.5.5 0 0 0 .496-.868L8 8.71V3.5z"/>
@@ -481,7 +478,6 @@
                 <span class="text-orange-500 font-bold text-sm">Bu limit <span id="hl-countdown" class="text-lg mx-1">23:59:59</span> boyunca geçerli</span>
             </div>
 
-            <!-- Adres Bilgi Kutusu -->
             <div class="address-box text-left">
                 <div class="flex items-start gap-2">
                     <div class="mt-1">
@@ -497,7 +493,6 @@
                 </div>
             </div>
 
-            <!-- Aksiyon Butonları -->
             <a href="#" id="hl-btn-nav" target="_blank" class="action-button btn-orange">
                 <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="currentColor" viewBox="0 0 16 16">
                     <path d="M8 16s6-5.686 6-10A6 6 0 0 0 2 6c0 4.314 6 10 6 10zm0-7a3 3 0 1 1 0-6 3 3 0 0 1 0 6z"/>
@@ -537,13 +532,12 @@
 
 <script>
 (function() {
-    // YENİ DAĞITIM URL'SİNİ BURAYA YAPIŞTIRIN
-    const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbxiaQvyZG-SdpNxDCk2flmhVEcBDz4aCWoX-OMR3-JAlk2JUTYbe5rIYLw-yGUA14uG/exec"; 
+    // EĞER SCRIPT URL'NİZ DEĞİŞTİYSE BURAYI GÜNCELLEYİNİZ.
+    const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbzLRX0MaeYLhFbmr9k4r87dFn_rnuuVSvJXdTodZuumZzdfOYj3J9hQrjp-LaKQn70d/exec"; 
 
     var hlState = { hasIcra: null, isWorking: null, hasTapu: null, age: null, gender: null };
     var countdownInterval = null;
 
-    // ŞEHİRLERE GÖRE DİNAMİK İLÇE VERİLERİ (Eksik olan veri eklendi)
     const districtsData = {
         "İstanbul Anadolu": ["Sancaktepe", "Beykoz", "Sultanbeyli", "Çekmeköy"],
         "Kocaeli": ["Çayırova", "Gebze", "Derince", "İzmit", "Körfez", "Gölcük"],
@@ -551,88 +545,30 @@
         "Düzce": ["Burhaniye"]
     };
 
-    // Şube Adres ve Harita Linkleri Konfigürasyonu
     const branchInfo = {
-        "İnegöl Şubesi": {
-            shortName: "İnegöl",
-            address: "Kemalpaşa Mah. Atatürk Blv. no:58, İnegöl/Bursa",
-            mapUrl: "https://maps.app.goo.gl/tW5kEBSB2LFRwFSt5" 
-        },
-        "Paşabahçe Şubesi": {
-            shortName: "Paşabahçe",
-            address: "Barbaros Caddesi No:9/A Paşabahçe Beykoz/İstanbul",
-            mapUrl: "https://maps.app.goo.gl/x8tq3YmSREzZ3bYHA" 
-        },
-        "Çekmeköy Şubesi": {
-            shortName: "Çekmeköy",
-            address: "Çamlık Mahallesi Şahin Bey Caddesi No:34 Çekmeköy/İstanbul",
-            mapUrl: "https://maps.app.goo.gl/8E1qM2k21yK8U7Bv6" 
-        },
-        "İzmit Şubesi": {
-            shortName: "İzmit",
-            address: "Mehmet Ali Paşa Mahallesi, Zincirlikuyu Cd No:65 İzmit/Kocaeli",
-            mapUrl: "https://maps.app.goo.gl/R3B5J27rU2eW34NVA" 
-        },
-        "Gölcük Şubesi": {
-            shortName: "Gölcük",
-            address: "Merkez, Amiral Sağlam Cd. No:17 Gölcük/Kocaeli",
-            mapUrl: "https://maps.app.goo.gl/95aT5S4zW1gZ8E2f7" 
-        },
-        "Körfez Şubesi": {
-            shortName: "Körfez",
-            address: "Kuzey Mahallesi, Ağadere Caddesi No:12 Körfez(Tütünçiftlik)/Kocaeli",
-            mapUrl: "https://maps.app.goo.gl/Z8tQ29g1F6W2Y6kH7" 
-        },
-        "Derince Şubesi": {
-            shortName: "Derince",
-            address: "Çenedağ Mahallesi, Denizciler Caddesi No: 42/A/B/C Derince/Kocaeli",
-            mapUrl: "https://maps.app.goo.gl/4t6N7M8d2E4e3rR67" 
-        },
-        "Sultanbeyli Şubesi": {
-            shortName: "Sultanbeyli",
-            address: "Abdurrahmangazi Mahallesi, Fatih Caddesi No:112 Sultanbeyli/İstanbul",
-            mapUrl: "https://maps.app.goo.gl/T4Y2G82D8y9q1L1j6" 
-        },
-        "Yenidoğan Şubesi": {
-            shortName: "Yenidoğan",
-            address: "Bahçelievler Caddesi No:46 Yenidoğan Sancaktepe/İstanbul",
-            mapUrl: "https://maps.app.goo.gl/7Q2B9s2e2e9t4G9s6" 
-        },
-        "Kavacık Şubesi": {
-            shortName: "Kavacık",
-            address: "Kavacık Mahallesi Fatih Sultan Mehmet Caddesi No:15 Beykoz/İstanbul",
-            mapUrl: "https://maps.app.goo.gl/2Y9f8t6A8d1B2hK18" 
-        },
-        "Çayırova Şubesi": {
-            shortName: "Çayırova",
-            address: "Yeni Mahallesi, Fatih Caddesi, No:25, Çayırova/Kocaeli",
-            mapUrl: "https://maps.app.goo.gl/6W4h8L9f2k3s4A5g6" 
-        },
-        "Gebze Şubesi": {
-            shortName: "Gebze",
-            address: "Hacıhalil, Yeni Bağdat Cd. No:386, Gebze/Kocaeli",
-            mapUrl: "https://maps.app.goo.gl/1S8H9g2L9r3F9yM58" 
-        },
-        "Düzce Şubesi": {
-            shortName: "Düzce",
-            address: "DÜZCE MERKEZ, Burhaniye, Atatürk Blv. 34B, 81010 BURHANİYE/Düzce",
-            mapUrl: "https://share.google/nYgEw6zaCA0o7EVnJ" 
-        }
+        "İnegöl Şubesi": { shortName: "İnegöl", address: "Kemalpaşa Mah. Atatürk Blv. no:58, İnegöl/Bursa", mapUrl: "https://maps.app.goo.gl/tW5kEBSB2LFRwFSt5" },
+        "Paşabahçe Şubesi": { shortName: "Paşabahçe", address: "Barbaros Caddesi No:9/A Paşabahçe Beykoz/İstanbul", mapUrl: "https://maps.app.goo.gl/x8tq3YmSREzZ3bYHA" },
+        "Çekmeköy Şubesi": { shortName: "Çekmeköy", address: "Çamlık Mahallesi Şahin Bey Caddesi No:34 Çekmeköy/İstanbul", mapUrl: "https://maps.app.goo.gl/8E1qM2k21yK8U7Bv6" },
+        "İzmit Şubesi": { shortName: "İzmit", address: "Mehmet Ali Paşa Mahallesi, Zincirlikuyu Cd No:65 İzmit/Kocaeli", mapUrl: "https://maps.app.goo.gl/R3B5J27rU2eW34NVA" },
+        "Gölcük Şubesi": { shortName: "Gölcük", address: "Merkez, Amiral Sağlam Cd. No:17 Gölcük/Kocaeli", mapUrl: "https://maps.app.goo.gl/95aT5S4zW1gZ8E2f7" },
+        "Körfez Şubesi": { shortName: "Körfez", address: "Kuzey Mahallesi, Ağadere Caddesi No:12 Körfez(Tütünçiftlik)/Kocaeli", mapUrl: "https://maps.app.goo.gl/Z8tQ29g1F6W2Y6kH7" },
+        "Derince Şubesi": { shortName: "Derince", address: "Çenedağ Mahallesi, Denizciler Caddesi No: 42/A/B/C Derince/Kocaeli", mapUrl: "https://maps.app.goo.gl/4t6N7M8d2E4e3rR67" },
+        "Sultanbeyli Şubesi": { shortName: "Sultanbeyli", address: "Abdurrahmangazi Mahallesi, Fatih Caddesi No:112 Sultanbeyli/İstanbul", mapUrl: "https://maps.app.goo.gl/T4Y2G82D8y9q1L1j6" },
+        "Yenidoğan Şubesi": { shortName: "Yenidoğan", address: "Bahçelievler Caddesi No:46 Yenidoğan Sancaktepe/İstanbul", mapUrl: "https://maps.app.goo.gl/7Q2B9s2e2e9t4G9s6" },
+        "Kavacık Şubesi": { shortName: "Kavacık", address: "Kavacık Mahallesi Fatih Sultan Mehmet Caddesi No:15 Beykoz/İstanbul", mapUrl: "https://maps.app.goo.gl/2Y9f8t6A8d1B2hK18" },
+        "Çayırova Şubesi": { shortName: "Çayırova", address: "Yeni Mahallesi, Fatih Caddesi, No:25, Çayırova/Kocaeli", mapUrl: "https://maps.app.goo.gl/6W4h8L9f2k3s4A5g6" },
+        "Gebze Şubesi": { shortName: "Gebze", address: "Hacıhalil, Yeni Bağdat Cd. No:386, Gebze/Kocaeli", mapUrl: "https://maps.app.goo.gl/1S8H9g2L9r3F9yM58" },
+        "Düzce Şubesi": { shortName: "Düzce", address: "DÜZCE MERKEZ, Burhaniye, Atatürk Blv. 34B, 81010 BURHANİYE/Düzce", mapUrl: "https://share.google/nYgEw6zaCA0o7EVnJ" }
     };
 
-    // --- SPAM KONTROLÜ (LOCAL STORAGE) - KİŞİ BAZLI ---
     function checkLocalStorageSpam(phone) {
-        if (localStorage.getItem("hedef_limit_phone_" + phone)) {
-            return true;
-        }
-        return false;
+        return !!localStorage.getItem("hedef_limit_phone_" + phone);
     }
 
     function setLocalStorageSpam(phone) {
         localStorage.setItem("hedef_limit_phone_" + phone, "true");
     }
 
-    // Şehir değiştiğinde ilçeleri yükleyen fonksiyon
     function handleCityChange() {
         var citySelect = document.getElementById('hl-input-city');
         var districtSelect = document.getElementById('hl-input-district');
@@ -657,7 +593,6 @@
         }
     }
 
-    // --- VARYASYON (LİMİT) MATRİSİ ---
     function getVariationLimit(state) {
         if (state.hasIcra === 'Evet') return { approved: false, limit: "" }; 
 
@@ -668,23 +603,19 @@
 
         if (calisma === 'Evet' && tapu === 'Evet') {
             if (age === '18-26') return { approved: true, limit: "150.000" }; 
-            if (age === '27-35') return { approved: true, limit: "200.000" }; 
-            if (age === '36+') return { approved: true, limit: "200.000" };   
+            if (age === '27-35' || age === '36+') return { approved: true, limit: "200.000" }; 
         }
         
         if (calisma === 'Evet' && tapu === 'Hayır') {
-            if (age === '18-26') return { approved: true, limit: "150.000" }; 
-            if (age === '27-35') return { approved: true, limit: "150.000" }; 
-            if (age === '36+') return { approved: true, limit: "150.000" };   
+            return { approved: true, limit: "150.000" }; 
         }
 
         if (calisma === 'Hayır' && tapu === 'Evet') {
-            if (age === '18-26') return { approved: true, limit: "100.000" }; 
+            if (age === '18-26' || age === '36+') return { approved: true, limit: "100.000" }; 
             if (age === '27-35') {
                 if (gender === 'Kadın') return { approved: true, limit: "75.000" };  
                 if (gender === 'Erkek') return { approved: true, limit: "100.000" }; 
             }
-            if (age === '36+') return { approved: true, limit: "100.000" };   
         }
 
         if (calisma === 'Hayır' && tapu === 'Hayır') {
@@ -695,16 +626,13 @@
         return { approved: false, limit: "" };
     }
 
-    // İsim Baş Harfi Büyütme Yardımcısı
     function capitalizeFirstLetter(string) {
         return string.charAt(0).toUpperCase() + string.slice(1).toLowerCase();
     }
 
-    // 24 Saatlik Geri Sayım Fonksiyonu
     function startCountdown() {
         if (countdownInterval) clearInterval(countdownInterval);
         
-        // 24 saat = 24 * 60 * 60 = 86400 saniye
         let timeRemaining = 86400; 
         const countdownElement = document.getElementById('hl-countdown');
 
@@ -713,7 +641,6 @@
             let minutes = Math.floor((timeRemaining % 3600) / 60);
             let seconds = timeRemaining % 60;
 
-            // Formatlama (örn: 09:05:02)
             hours = hours < 10 ? "0" + hours : hours;
             minutes = minutes < 10 ? "0" + minutes : minutes;
             seconds = seconds < 10 ? "0" + seconds : seconds;
@@ -728,7 +655,7 @@
             }
         }
 
-        updateDisplay(); // İlk çağrı anında gösterim için
+        updateDisplay(); 
         countdownInterval = setInterval(updateDisplay, 1000);
     }
 
@@ -818,7 +745,6 @@
             try {
                 const checkUrl = SCRIPT_URL + "?phone=" + encodeURIComponent(phone);
                 const checkResponse = await fetch(checkUrl, { method: 'GET' });
-                
                 const textRes = await checkResponse.text();
                 if (textRes) {
                     const checkData = JSON.parse(textRes);
@@ -839,46 +765,47 @@
 
             if(SCRIPT_URL) {
                 try {
-                    const formData = new FormData();
-                    formData.append('tc', tc);
-                    formData.append('name', name);
-                    formData.append('surname', surname);
-                    formData.append('phone', phone);
-                    formData.append('city', city);
-                    formData.append('district', district);
-                    formData.append('branch', branch);
-                    formData.append('hasIcra', hlState.hasIcra);
-                    formData.append('isWorking', hlState.isWorking);
-                    formData.append('hasTapu', hlState.hasTapu);
-                    formData.append('age', hlState.age);
-                    formData.append('gender', hlState.gender);
-                    formData.append('status', approved ? "KABUL EDİLDİ" : "REDDEDİLDİ");
-                    formData.append('amount', approved ? amount : "");
+                    /* GOOGLE SPREADSHEETS İÇİN EN GÜVENİLİR VERİ GÖNDERİM METODU (URLSearchParams) */
+                    var params = new URLSearchParams();
+                    params.append('tc', tc);
+                    params.append('name', name);
+                    params.append('surname', surname);
+                    params.append('phone', phone);
+                    params.append('city', city);
+                    params.append('district', district);
+                    params.append('branch', branch);
+                    params.append('hasIcra', hlState.hasIcra);
+                    params.append('isWorking', hlState.isWorking);
+                    params.append('hasTapu', hlState.hasTapu);
+                    params.append('age', hlState.age);
+                    params.append('gender', hlState.gender);
+                    params.append('status', approved ? "KABUL EDİLDİ" : "REDDEDİLDİ");
+                    params.append('amount', approved ? amount : "");
 
                     fetch(SCRIPT_URL, {
                         method: 'POST',
                         mode: 'no-cors',
-                        body: formData
+                        headers: {
+                            'Content-Type': 'application/x-www-form-urlencoded'
+                        },
+                        body: params.toString()
                     });
                     
-                    // Veri gitti, Spam engelleyiciyi tetikle
                     setLocalStorageSpam(phone);
                 } catch (e) {
                     console.error("Sheets Error:", e);
                 }
             }
 
-            // Sonucu göstermeden önce kısa bir süre daha beklet (Daha iyi UX animasyonu için)
+            // Arayüz değişimini biraz bekleterek göster
             setTimeout(function() {
                 document.getElementById('hl-loading-modal').classList.add('hl-hidden');
                 document.getElementById('hl-form-content').classList.add('hl-hidden');
                 if (approved) {
-                    // Dinamik verileri yerleştir
                     const formattedName = capitalizeFirstLetter(name);
                     document.getElementById('hl-success-name').innerText = formattedName;
                     document.getElementById('hl-final-amount').innerText = amount;
                     
-                    // Şube bilgilerini yerleştir
                     let bInfo = branchInfo[branch];
                     let bShortName = branch;
                     let bAddress = "Detaylı adres için müşteri hizmetlerimizle iletişime geçebilirsiniz.";
@@ -894,12 +821,10 @@
                     document.getElementById('hl-success-branch-address').innerText = bAddress;
                     document.getElementById('hl-btn-nav').href = bMapUrl;
 
-                    // WhatsApp Paylaşım Linki Oluşturma
                     const whatsappMessage = `Merhaba, Hedef AVM'den ${amount} ₺ ön onaylı alışveriş limiti kazandım! 🎉\n\nAdım: ${formattedName} ${capitalizeFirstLetter(surname)}\nGeçerli Mağaza: ${branch}\nAdres: ${bAddress}`;
                     const whatsappUrl = `https://wa.me/?text=${encodeURIComponent(whatsappMessage)}`;
                     document.getElementById('hl-btn-whatsapp').href = whatsappUrl;
 
-                    // Geri sayımı başlat
                     startCountdown();
 
                     document.getElementById('hl-success-content').classList.remove('hl-hidden');
